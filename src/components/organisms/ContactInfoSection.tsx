@@ -3,18 +3,22 @@
 import { useEffect, useRef } from 'react';
 
 interface ContactInfoSectionProps {
+  name: string;
   phone: string;
   email: string;
+  onNameChange: (name: string) => void;
   onPhoneChange: (phone: string) => void;
   onEmailChange: (email: string) => void;
 }
 
 /**
- * ContactInfoSection - Phone and email fields organism
+ * ContactInfoSection - Name, phone, and email fields organism
  */
 export function ContactInfoSection({
+  name,
   phone,
   email,
+  onNameChange,
   onPhoneChange,
   onEmailChange,
 }: ContactInfoSectionProps) {
@@ -26,18 +30,20 @@ export function ContactInfoSection({
 
     const handleInputChange = (e: Event) => {
       const customEvent = e as CustomEvent<{ name: string; value: string }>;
-      const { name, value } = customEvent.detail;
+      const { name: fieldName, value } = customEvent.detail;
       
-      if (name === 'phone') {
+      if (fieldName === 'name') {
+        onNameChange(value);
+      } else if (fieldName === 'phone') {
         onPhoneChange(value);
-      } else if (name === 'email') {
+      } else if (fieldName === 'email') {
         onEmailChange(value);
       }
     };
 
     section.addEventListener('kbk-input-change', handleInputChange);
     return () => section.removeEventListener('kbk-input-change', handleInputChange);
-  }, [onPhoneChange, onEmailChange]);
+  }, [onNameChange, onPhoneChange, onEmailChange]);
 
   return (
     <kbk-form-section
@@ -46,6 +52,14 @@ export function ContactInfoSection({
       description="How can we reach you about your request?"
     >
       <div className="space-y-4">
+        <kbk-input
+          label="Name"
+          name="name"
+          type="text"
+          placeholder="Your name"
+          value={name}
+          required
+        />
         <kbk-input
           label="Phone"
           name="phone"

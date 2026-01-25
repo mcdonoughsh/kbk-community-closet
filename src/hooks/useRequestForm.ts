@@ -22,6 +22,7 @@ const createEmptyClothingRequest = (): ClothingRequest => ({
 // Initial form state
 const createInitialFormData = (): RequestFormData => ({
   contact: {
+    name: '',
     phone: '',
     email: '',
   },
@@ -36,6 +37,7 @@ interface UseRequestFormReturn {
   formData: RequestFormData;
   
   // Contact methods
+  updateName: (name: string) => void;
   updatePhone: (phone: string) => void;
   updateEmail: (email: string) => void;
   
@@ -62,6 +64,13 @@ export function useRequestForm(): UseRequestFormReturn {
   const [formData, setFormData] = useState<RequestFormData>(createInitialFormData);
 
   // Contact methods
+  const updateName = useCallback((name: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      contact: { ...prev.contact, name },
+    }));
+  }, []);
+
   const updatePhone = useCallback((phone: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -143,6 +152,7 @@ export function useRequestForm(): UseRequestFormReturn {
 
   return {
     formData,
+    updateName,
     updatePhone,
     updateEmail,
     addClothingRequest,

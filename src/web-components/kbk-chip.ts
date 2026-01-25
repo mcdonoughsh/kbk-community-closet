@@ -98,9 +98,9 @@ export class KbkChip extends HTMLElement {
           font-size: 0.8125rem;
           padding: 0.375rem 0.625rem;
           border-radius: 0.5rem;
-          border: 1px solid var(--kbk-border, #d1d5db);
-          background: ${selected ? 'var(--kbk-primary, #2563eb)' : 'var(--kbk-card, #ffffff)'};
-          color: ${selected ? '#ffffff' : 'var(--kbk-text, #171717)'};
+          border: 1px solid ${selected ? 'var(--kbk-primary, #036bb6)' : 'var(--kbk-primary, #036bb6)'};
+          background: ${selected ? 'var(--kbk-primary, #036bb6)' : 'var(--kbk-card, #ffffff)'};
+          color: ${selected ? '#ffffff' : 'var(--kbk-primary, #036bb6)'};
           cursor: ${disabled ? 'not-allowed' : 'pointer'};
           opacity: ${disabled ? '0.5' : '1'};
           transition: all 0.15s ease;
@@ -109,11 +109,11 @@ export class KbkChip extends HTMLElement {
         }
         
         button:hover:not(:disabled) {
-          background: ${selected ? 'var(--kbk-primary-hover, #1d4ed8)' : 'var(--kbk-secondary, #e5e7eb)'};
+          background: ${selected ? 'var(--kbk-primary-hover, #025a9a)' : 'var(--kbk-background, #e6f4ff)'};
         }
         
         button:focus {
-          outline: 2px solid var(--kbk-border-focus, #2563eb);
+          outline: 2px solid var(--kbk-border-focus, #036bb6);
           outline-offset: 2px;
         }
       </style>

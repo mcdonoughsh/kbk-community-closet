@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Donate - KBK Community Closet",
+  title: "Donate",
   description: "Donate items to support the KBK Community Closet.",
 };
 

@@ -13,6 +13,7 @@ import { GearRequestSection } from './GearRequestSection';
 export function RequestForm() {
   const {
     formData,
+    updateName,
     updatePhone,
     updateEmail,
     addClothingRequest,
@@ -61,8 +62,10 @@ export function RequestForm() {
     >
       {/* Contact Information */}
       <ContactInfoSection
+        name={formData.contact.name}
         phone={formData.contact.phone}
         email={formData.contact.email}
+        onNameChange={updateName}
         onPhoneChange={updatePhone}
         onEmailChange={updateEmail}
       />

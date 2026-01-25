@@ -12,9 +12,15 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "KBK Community Closet - Supporting Our Community",
+  title: {
+    default: "KBK CC",
+    template: "KBK CC | %s",
+  },
   description: "KBK Community Closet provides resources and support to our community. Request items, donate, and learn about upcoming events.",
   keywords: ["community closet", "donations", "charity", "community support"],
+  icons: {
+    icon: "/favicon.png",
+  },
   openGraph: {
     title: "KBK Community Closet",
     description: "Supporting our community through donations and resources",

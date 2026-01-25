@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -16,76 +16,116 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
+  // Prevent body scroll when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
-    <nav className="bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex-1"></div>
-          <div className="flex-shrink-0">
-            <Link href="/" className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900">
-              KBK Community Closet
-            </Link>
+    <>
+      <nav className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex-1"></div>
+            <div className="flex-shrink-0">
+              <Link href="/" className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900">
+                KBK Community Closet
+              </Link>
+            </div>
+            <div className="flex-1 flex justify-end">
+              {/* Hamburger button */}
+              <button
+                onClick={() => setIsOpen(true)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#036bb6]"
+                aria-expanded={isOpen}
+                aria-label="Open menu"
+              >
+                <svg
+                  className="h-5 w-5 sm:h-6 sm:w-6"
+                  stroke="currentColor"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className="flex-1 flex justify-end">
-          
-          {/* Hamburger button */}
+        </div>
+      </nav>
+
+      {/* Drawer overlay */}
+      <div
+        className={`fixed inset-0 bg-black/30 z-40 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Drawer panel */}
+      <div
+        className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white shadow-xl z-50 transform transition-transform duration-300 ease-out ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        {/* Drawer header with close button */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <span className="text-lg font-medium text-gray-900">Menu</span>
           <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-            aria-expanded={isOpen}
-            aria-label="Toggle menu"
+            onClick={() => setIsOpen(false)}
+            className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#036bb6]"
+            aria-label="Close menu"
           >
             <svg
-              className="h-5 w-5 sm:h-6 sm:w-6"
+              className="h-5 w-5"
               stroke="currentColor"
               fill="none"
               viewBox="0 0 24 24"
             >
-              {isOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
-          </div>
+        </div>
+
+        {/* Drawer nav items */}
+        <div className="py-4">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`block px-6 py-3 text-base sm:text-lg font-medium transition-colors ${
+                  isActive
+                    ? "bg-[#e6f4ff] text-[#036bb6] border-r-4 border-[#036bb6]"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       </div>
-
-      {/* Menu - stacked for all screen sizes */}
-      {isOpen && (
-        <div>
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-sm sm:text-base lg:text-lg font-medium text-center ${
-                    isActive
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </nav>
+    </>
   );
 }

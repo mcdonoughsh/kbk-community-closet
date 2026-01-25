@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Events - KBK Community Closet",
+  title: "Events",
   description: "Upcoming events and activities at KBK Community Closet.",
 };
 

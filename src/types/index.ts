@@ -28,6 +28,7 @@ export interface GearRequest {
 
 // Contact information
 export interface ContactInfo {
+  name: string;
   phone: string;
   email: string;
 }

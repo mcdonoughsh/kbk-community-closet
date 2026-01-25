@@ -4,7 +4,7 @@ import { WebComponentsProvider } from "@/components/WebComponentsProvider";
 import { RequestForm } from "@/components/organisms";
 
 export const metadata: Metadata = {
-  title: "Request Items - KBK Community Closet",
+  title: "Request",
   description: "Request items you need from the KBK Community Closet.",
 };
 

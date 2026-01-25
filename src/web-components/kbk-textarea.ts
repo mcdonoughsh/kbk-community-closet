@@ -18,15 +18,19 @@ export class KbkTextarea extends HTMLElement {
 
   private shadow: ShadowRoot;
   private boundHandleInput: (e: Event) => void;
+  private hasRendered = false;
 
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
     this.boundHandleInput = this.handleInput.bind(this);
-    this.render();
   }
 
   connectedCallback() {
+    if (!this.hasRendered) {
+      this.render();
+      this.hasRendered = true;
+    }
     this.shadow.querySelector('textarea')?.addEventListener('input', this.boundHandleInput);
   }
 
@@ -34,8 +38,21 @@ export class KbkTextarea extends HTMLElement {
     this.shadow.querySelector('textarea')?.removeEventListener('input', this.boundHandleInput);
   }
 
-  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null) {
-    if (oldValue !== newValue) {
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    if (oldValue === newValue) return;
+    
+    // For value changes, just update the textarea directly without re-rendering
+    if (name === 'value') {
+      const textarea = this.shadow.querySelector('textarea');
+      if (textarea && document.activeElement !== textarea && textarea !== this.shadow.activeElement) {
+        // Only update if the textarea is not focused (to avoid disrupting user typing)
+        textarea.value = newValue || '';
+      }
+      return;
+    }
+    
+    // For other attribute changes, re-render if we've already rendered once
+    if (this.hasRendered) {
       this.render();
     }
   }
@@ -133,8 +150,8 @@ export class KbkTextarea extends HTMLElement {
         
         textarea:focus {
           outline: none;
-          border-color: var(--kbk-border-focus, #2563eb);
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          border-color: var(--kbk-border-focus, #036bb6);
+          box-shadow: 0 0 0 3px rgba(3, 107, 182, 0.1);
         }
         
         textarea::placeholder {

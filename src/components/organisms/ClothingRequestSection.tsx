@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { ChipGroup, IconChipGroup } from '@/components/molecules';
 import type { ClothingRequest, ClothingSize, Gender, ClothingType, ChipOption } from '@/types';
 
@@ -32,6 +31,27 @@ const clothingTypeOptions: ChipOption<ClothingType>[] = [
   { value: 'Shoes', label: 'Shoes' },
 ];
 
+// Trash icon component
+function TrashIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  );
+}
+
 interface ClothingRequestSectionProps {
   request: ClothingRequest;
   index: number;
@@ -54,17 +74,6 @@ export function ClothingRequestSection({
   onRemove,
   showRemove,
 }: ClothingRequestSectionProps) {
-  const removeButtonRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const button = removeButtonRef.current;
-    if (!button || !onRemove) return;
-
-    const handleClick = () => onRemove();
-    button.addEventListener('kbk-button-click', handleClick);
-    return () => button.removeEventListener('kbk-button-click', handleClick);
-  }, [onRemove]);
-
   const handleSizeChange = (selected: ClothingSize[]) => {
     onSizeChange(selected[0] || null);
   };
@@ -106,12 +115,17 @@ export function ClothingRequestSection({
           mode="multiple"
         />
 
-        {/* Remove button */}
+        {/* Delete button */}
         {showRemove && (
-          <div className="pt-2">
-            <kbk-button ref={removeButtonRef} variant="secondary">
-              Remove Request
-            </kbk-button>
+          <div className="flex justify-end pt-2">
+            <button
+              type="button"
+              onClick={onRemove}
+              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+              aria-label="Delete clothing request"
+            >
+              <TrashIcon />
+            </button>
           </div>
         )}
       </div>

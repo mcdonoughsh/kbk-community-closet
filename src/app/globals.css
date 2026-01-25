@@ -6,8 +6,8 @@
   --font-quicksand: var(--font-quicksand);
   
   /* KBK Design Tokens */
-  --kbk-primary: #2563eb;
-  --kbk-primary-hover: #1d4ed8;
+  --kbk-primary: #036bb6;
+  --kbk-primary-hover: #025a9a;
   --kbk-secondary: #e5e7eb;
   --kbk-secondary-hover: #d1d5db;
   --kbk-background: #e6f4ff;
@@ -15,7 +15,7 @@
   --kbk-text: #171717;
   --kbk-text-muted: #6b7280;
   --kbk-border: #d1d5db;
-  --kbk-border-focus: #2563eb;
+  --kbk-border-focus: #036bb6;
   --kbk-spacing: 4px;
   --kbk-radius: 8px;
   --kbk-radius-lg: 12px;
