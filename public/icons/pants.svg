@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baby pants with elastic waistband -->
+  <path d="M8 4H24" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M8 4V8C8 8 8 10 9 10H14L13 28H11C10 28 10 27 10 27L8 10V4" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 4V8C24 8 24 10 23 10H18L19 28H21C22 28 22 27 22 27L24 10V4" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M14 10H18" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M9 6H12" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M20 6H23" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <rect x="10" y="12" width="4" height="5" rx="0.5" stroke="#036bb6" stroke-width="1.5"/>
+</svg>

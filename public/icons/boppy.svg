@@ -1,0 +1,6 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Boppy nursing pillow - C-shaped -->
+  <path d="M16 6C10 6 5 10 5 16C5 22 10 26 16 26" stroke="#036bb6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 10C12 10 9 12.5 9 16C9 19.5 12 22 16 22" stroke="#036bb6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20 8C23 9 26 12 26 16C26 20 23 23 20 24" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+</svg>

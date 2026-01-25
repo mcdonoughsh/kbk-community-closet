@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baby dress with ruffled skirt -->
+  <path d="M12 4H20" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M12 4C12 6 14 8 16 8C18 8 20 6 20 4" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 4L11 6L10 12H22L21 6L20 4" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 12L7 28H25L22 12" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 12C10 12 12 14 16 14C20 14 22 12 22 12" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M9 18H23" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+  <path d="M8 24H24" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baby sweater with raglan sleeves -->
+  <path d="M13 4H19" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M13 4C13 6 14 7 16 7C18 7 19 6 19 4" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M13 4L8 9L5 9V15L8 15L8 27H12" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M19 4L24 9L27 9V15L24 15L24 27H20" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 12V27H20V12" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 12L16 7L20 12" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

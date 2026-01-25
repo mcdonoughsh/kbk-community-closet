@@ -1,12 +1,10 @@
 import { initTRPC } from "@trpc/server";
-import { prisma } from "@/lib/prisma";
 
 /**
  * Context type for tRPC
+ * Database will be added later
  */
-type Context = {
-  prisma: typeof prisma;
-};
+type Context = Record<string, never>;
 
 /**
  * Initialization of tRPC backend
@@ -25,7 +23,5 @@ export const publicProcedure = t.procedure;
  * Create context for tRPC
  */
 export const createContext = async (): Promise<Context> => {
-  return {
-    prisma,
-  };
+  return {};
 };

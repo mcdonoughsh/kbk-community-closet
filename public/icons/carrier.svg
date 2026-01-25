@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baby carrier -->
+  <path d="M10 6C10 6 12 4 16 4C20 4 22 6 22 6" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 6V10C10 10 8 10 7 12C6 14 6 18 7 20C8 22 10 22 10 22H22C22 22 24 22 25 20C26 18 26 14 25 12C24 10 22 10 22 10V6" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M7 14L4 12V18L7 16" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25 14L28 12V18L25 16" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 22V28" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M20 22V28" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="16" cy="14" r="3" stroke="#036bb6" stroke-width="1.5"/>
+</svg>

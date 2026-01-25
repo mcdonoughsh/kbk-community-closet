@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baby cardigan/coat with buttons -->
+  <path d="M12 3H20" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M12 3C12 5 14 7 16 7C18 7 20 5 20 3" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 3L10 3L6 7V14H9V28H15V14" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20 3L22 3L26 7V14H23V28H17V14" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15 7V28" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M17 7V28" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="13" cy="14" r="1" fill="#036bb6"/>
+  <circle cx="13" cy="18" r="1" fill="#036bb6"/>
+  <circle cx="13" cy="22" r="1" fill="#036bb6"/>
+</svg>

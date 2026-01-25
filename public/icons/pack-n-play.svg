@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pack and play / playpen -->
+  <path d="M6 10H26V24H6V10Z" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 10L4 6" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M26 10L28 6" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M6 24L4 28" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M26 24L28 28" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M10 10V24" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+  <path d="M16 10V24" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+  <path d="M22 10V24" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+</svg>

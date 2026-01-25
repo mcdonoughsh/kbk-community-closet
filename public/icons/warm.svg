@@ -1,0 +1,8 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Baby winter hat/beanie with pom-pom -->
+  <circle cx="16" cy="6" r="3" stroke="#036bb6" stroke-width="1.5"/>
+  <path d="M8 18C8 12 11 9 16 9C21 9 24 12 24 18" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 18H26" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M6 18V22C6 24 8 26 10 26H22C24 26 26 24 26 22V18" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M6 22H26" stroke="#036bb6" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
