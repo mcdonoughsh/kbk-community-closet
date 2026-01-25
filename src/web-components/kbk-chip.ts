@@ -71,14 +71,16 @@ export class KbkChip extends HTMLElement {
   private handleClick() {
     if (this.disabled) return;
     
-    this.selected = !this.selected;
+    // Don't internally toggle state - let parent control it
+    // Just dispatch event with the NEW state (opposite of current)
+    const newSelected = !this.selected;
     
     this.dispatchEvent(new CustomEvent('kbk-chip-toggle', {
       bubbles: true,
       composed: true,
       detail: {
         value: this.value,
-        selected: this.selected
+        selected: newSelected
       }
     }));
   }
