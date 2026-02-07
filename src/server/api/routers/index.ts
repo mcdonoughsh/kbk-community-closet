@@ -1,14 +1,13 @@
-import { router } from "../trpc";
-import { publicProcedure } from "../trpc";
-import { z } from "zod";
+import { router, publicProcedure } from "../trpc";
 
 /**
  * Main tRPC router
  * Combine all sub-routers here
  */
 export const appRouter = router({
-  // Example procedure - replace with your actual routes
-  health: publicProcedure.query(() => {
+  health: publicProcedure.query(async ({ ctx }) => {
+    // Quick DB connectivity check
+    await ctx.prisma.$queryRaw`SELECT 1`;
     return { status: "ok", message: "KBK Community Closet API is running" };
   }),
 });
