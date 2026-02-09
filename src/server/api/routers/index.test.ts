@@ -8,6 +8,8 @@ describe("App Router", () => {
       prisma: {
         $queryRaw: vi.fn().mockResolvedValue([{ "?column?": 1 }]),
       } as unknown as Context["prisma"],
+      user: null,
+      userProfile: null,
     };
     const caller = appRouter.createCaller(mockCtx);
 

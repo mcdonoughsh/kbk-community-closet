@@ -1,4 +1,6 @@
 import { router, publicProcedure } from "../trpc";
+import { requestRouter } from "./request";
+import { adminRouter } from "./admin";
 
 /**
  * Main tRPC router
@@ -6,10 +8,12 @@ import { router, publicProcedure } from "../trpc";
  */
 export const appRouter = router({
   health: publicProcedure.query(async ({ ctx }) => {
-    // Quick DB connectivity check
     await ctx.prisma.$queryRaw`SELECT 1`;
     return { status: "ok", message: "KBK Community Closet API is running" };
   }),
+
+  request: requestRouter,
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;

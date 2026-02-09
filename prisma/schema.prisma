@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,4 +9,85 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  VOLUNTEER
+}
+
+enum RequestStatus {
+  NEW
+  ASSIGNED
+  FULFILLED
+}
+
+enum ItemCategory {
+  CLOTHING
+  GEAR
+}
+
+// ─── Models ──────────────────────────────────────────────
+
+model ItemType {
+  id           String       @id @default(uuid())
+  name         String       @unique
+  category     ItemCategory
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  isDeleted    Boolean      @default(false)
+  requestItems RequestItem[]
+}
+
+model Contact {
+  id            String       @id @default(uuid())
+  name          String
+  phone         String
+  email         String?
+  userProfileId String?      @unique
+  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
+  requests      Request[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  isDeleted     Boolean      @default(false)
+}
+
+model UserProfile {
+  id               String    @id @default(uuid())
+  supabaseUserId   String    @unique
+  role             Role      @default(VOLUNTEER)
+  contact          Contact?
+  assignedRequests Request[] @relation("AssignedTo")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  isDeleted        Boolean   @default(false)
+}
+
+model Request {
+  id             String        @id @default(uuid())
+  contactId      String
+  contact        Contact       @relation(fields: [contactId], references: [id])
+  status         RequestStatus @default(NEW)
+  additionalInfo String?
+  assignedToId   String?
+  assignedTo     UserProfile?  @relation("AssignedTo", fields: [assignedToId], references: [id])
+  items          RequestItem[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  isDeleted      Boolean       @default(false)
+}
+
+model RequestItem {
+  id         String   @id @default(uuid())
+  requestId  String
+  request    Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  itemTypeId String
+  itemType   ItemType @relation(fields: [itemTypeId], references: [id])
+  size       String?  // null for gear items
+  gender     String?  // null for gear items
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isDeleted  Boolean  @default(false)
 }

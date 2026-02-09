@@ -3,6 +3,7 @@ import { Quicksand } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import JsonLd from "@/components/JsonLd";
+import { TRPCProvider } from "@/components/TRPCProvider";
 
 const quicksand = Quicksand({
   weight: "400",
@@ -43,9 +44,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${quicksand.variable} antialiased`}>
-        <JsonLd data={jsonLd} />
-        <Navigation />
-        <main>{children}</main>
+        <TRPCProvider>
+          <JsonLd data={jsonLd} />
+          <Navigation />
+          <main>{children}</main>
+        </TRPCProvider>
       </body>
     </html>
   );
