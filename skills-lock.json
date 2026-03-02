@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "launchpad": {
+      "source": "vichannnnn/design-suite",
+      "sourceType": "github",
+      "computedHash": "d84dee5c5540f4eccc4e9f75f88db644b46287e3e050af20b77a62362325a646"
+    },
     "vercel-composition-patterns": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
@@ -15,6 +20,11 @@
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    },
+    "workbench": {
+      "source": "vichannnnn/design-suite",
+      "sourceType": "github",
+      "computedHash": "4624cd6b32b9bdcd0fef5823fbe9a1e87c85f86df7bc5a3ebefed7c2c10adcd6"
     }
   }
 }
