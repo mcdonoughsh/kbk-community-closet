@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PageHeader from "@/components/PageHeader";
 import OnesieIcon from "@/components/OnesieIcon";
 
 export const metadata: Metadata = {
@@ -24,19 +23,25 @@ const SIZES = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[var(--kbk-background)]">
-      {/* Hero */}
-      <PageHeader
-        title="KBK Community Closet"
-        subtitle="Curated bags of seasonal basics for families"
-      />
-
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center -mt-2 mb-4">
-        <p className="text-[var(--kbk-text-muted)] text-base sm:text-lg">
-          We put together bags so you get what you need. Request one, or help by
-          donating.
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#e6f4ff] font-sans">
+      {/* Hero — same rhythm as donate / request */}
+      <section
+        className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8"
+        aria-labelledby="home-heading"
+      >
+        <div className="mx-auto max-w-4xl text-center">
+          <h1
+            id="home-heading"
+            className="text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-tight text-[#025a9a] leading-[1.1]"
+          >
+            KBK Community Closet
+          </h1>
+          <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-[#171717]/80 leading-relaxed">
+            Curated bags of seasonal basics for families. We put together bags so
+            you get what you need. Request one, or help by donating.
+          </p>
+        </div>
+      </section>
 
       {/* Primary actions */}
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 mb-16 sm:mb-24">
@@ -44,11 +49,11 @@ export default function Home() {
           href="/request"
           className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-primary)] text-white rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-primary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
         >
-          Request a bag
+          Request
         </Link>
         <Link
           href="/donate"
-          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-[var(--kbk-primary)] rounded-xl text-base sm:text-lg font-semibold border-2 border-[var(--kbk-primary)] hover:bg-[var(--kbk-primary)]/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
+          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-[var(--kbk-primary)] rounded-xl text-base sm:text-lg font-semibold border-1 border-[var(--kbk-primary)] hover:bg-[var(--kbk-primary)]/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
         >
           Donate
         </Link>
@@ -63,7 +68,7 @@ export default function Home() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <h2
             id="how-we-curate-heading"
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[var(--kbk-text)] text-center mb-4"
+            className="text-2xl sm:text-3xl font-semibold text-[#025a9a] tracking-tight text-center mb-4"
           >
             How we curate
           </h2>
@@ -127,7 +132,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <h2
             id="sizes-heading"
-            className="text-xl sm:text-2xl font-semibold text-[var(--kbk-text)] text-center mb-3"
+            className="text-xl sm:text-2xl font-semibold text-[#025a9a] text-center mb-3"
           >
             Sizes we cover
           </h2>
@@ -138,7 +143,7 @@ export default function Home() {
             {SIZES.map((size) => (
               <li
                 key={size}
-                className="px-4 py-2.5 bg-white rounded-xl text-[var(--kbk-text)] font-medium text-sm sm:text-base border border-[var(--kbk-border)] shadow-sm"
+                className="px-4 py-2.5 bg-white rounded-xl text-[var(--kbk-text)] font-medium text-sm sm:text-base border border-[var(--kbk-border)]"
               >
                 {size}
               </li>
@@ -150,7 +155,7 @@ export default function Home() {
       {/* Final CTA */}
       <section className="py-16 sm:py-24 px-4 sm:px-6 bg-white rounded-t-[2rem] sm:rounded-t-[3rem]">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-xl sm:text-2xl font-semibold text-[var(--kbk-text)] mb-3">
+          <h2 className="text-xl sm:text-2xl font-semibold text-[#025a9a] mb-3">
             Ready to request or donate?
           </h2>
           <p className="text-[var(--kbk-text-muted)] text-base sm:text-lg mb-10">
@@ -162,7 +167,7 @@ export default function Home() {
               href="/request"
               className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-primary)] text-white rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-primary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
             >
-              Request a bag
+              Request
             </Link>
             <Link
               href="/donate"

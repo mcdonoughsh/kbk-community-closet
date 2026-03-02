@@ -31,7 +31,6 @@ const clothingTypeOptions: ChipOption<ClothingType>[] = [
   { value: 'Shoes', label: 'Shoes' },
 ];
 
-// Trash icon component
 function TrashIcon() {
   return (
     <svg
@@ -43,6 +42,7 @@ function TrashIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden
     >
       <polyline points="3 6 5 6 21 6" />
       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -53,81 +53,84 @@ function TrashIcon() {
 }
 
 interface ClothingRequestSectionProps {
-  request: ClothingRequest;
-  index: number;
-  onSizeChange: (size: ClothingSize | null) => void;
-  onGenderChange: (gender: Gender | null) => void;
-  onClothingTypesChange: (types: ClothingType[]) => void;
-  onRemove?: () => void;
-  showRemove: boolean;
+  clothingRequests: ClothingRequest[];
+  onSizeChange: (id: string, size: ClothingSize | null) => void;
+  onGenderChange: (id: string, gender: Gender | null) => void;
+  onClothingTypesChange: (id: string, types: ClothingType[]) => void;
+  onRemove: (id: string) => void;
+  onAdd: () => void;
 }
 
 /**
- * ClothingRequestSection - Size, gender, clothes selection organism
+ * ClothingRequestSection - One section with multiple clothing request rows (same pattern as Curated bags).
  */
 export function ClothingRequestSection({
-  request,
-  index,
+  clothingRequests,
   onSizeChange,
   onGenderChange,
   onClothingTypesChange,
   onRemove,
-  showRemove,
+  onAdd,
 }: ClothingRequestSectionProps) {
-  const handleSizeChange = (selected: ClothingSize[]) => {
-    onSizeChange(selected[0] || null);
-  };
-
-  const handleGenderChange = (selected: Gender[]) => {
-    onGenderChange(selected[0] || null);
-  };
-
   return (
     <kbk-form-section
-      heading={index === 0 ? '3. Additional requested clothing' : `Request ${index + 1}`}
-      description={index === 0 ? 'Need specific items? Add size, gender, and types for each request.' : 'Select size, gender, and types of clothing needed.'}
+      heading="3. Additional requested clothing"
+      description="Need specific items? Add size, gender, and types for each request."
     >
       <div className="space-y-6">
-        {/* Size selection */}
-        <ChipGroup
-          label="Size"
-          options={sizeOptions}
-          selected={request.size ? [request.size] : []}
-          onChange={handleSizeChange}
-          mode="single"
-        />
-
-        {/* Gender selection */}
-        <ChipGroup
-          label="Gender"
-          options={genderOptions}
-          selected={request.gender ? [request.gender] : []}
-          onChange={handleGenderChange}
-          mode="single"
-        />
-
-        {/* Clothing types */}
-        <IconChipGroup
-          label="Desired Clothes"
-          options={clothingTypeOptions}
-          selected={request.clothingTypes}
-          onChange={onClothingTypesChange}
-          mode="multiple"
-        />
-
-        {/* Delete button */}
-        {showRemove && (
-          <div className="flex justify-end pt-2">
-            <button
-              type="button"
-              onClick={onRemove}
-              className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
-              aria-label="Delete clothing request"
-            >
-              <TrashIcon />
-            </button>
+        {clothingRequests.map((request, index) => (
+          <div
+            key={request.id}
+            className="rounded-xl bg-[#f8fafc] p-4 ring-1 ring-[#025a9a]/10 space-y-4"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-medium text-[#171717]/80">
+                Request {index + 1}
+              </span>
+              {clothingRequests.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => onRemove(request.id)}
+                  className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
+                  aria-label={`Remove clothing request ${index + 1}`}
+                >
+                  <TrashIcon />
+                </button>
+              )}
+            </div>
+            <div className="space-y-6">
+              <ChipGroup
+                label="Size"
+                options={sizeOptions}
+                selected={request.size ? [request.size] : []}
+                onChange={(selected) => onSizeChange(request.id, selected[0] ?? null)}
+                mode="single"
+              />
+              <ChipGroup
+                label="Gender"
+                options={genderOptions}
+                selected={request.gender ? [request.gender] : []}
+                onChange={(selected) => onGenderChange(request.id, selected[0] ?? null)}
+                mode="single"
+              />
+              <IconChipGroup
+                label="Desired Clothes"
+                options={clothingTypeOptions}
+                selected={request.clothingTypes}
+                onChange={(types) => onClothingTypesChange(request.id, types)}
+                mode="multiple"
+              />
+            </div>
           </div>
-        )}
+        ))}
+        <button
+          type="button"
+          onClick={onAdd}
+          className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#025a9a]/30 px-4 py-3 text-[#025a9a] font-medium hover:bg-[#025a9a]/5 hover:border-[#025a9a]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
+        >
+          <span aria-hidden>+</span>
+          Add another clothing request
+        </button>
       </div>
     </kbk-form-section>
   );

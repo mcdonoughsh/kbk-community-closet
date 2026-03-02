@@ -33,13 +33,21 @@ export default function Navigation() {
       <nav className="bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex-1"></div>
-            <div className="flex-shrink-0">
-              <Link href="/" className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900">
-                KBK Community Closet
-              </Link>
-            </div>
-            <div className="flex-1 flex justify-end">
+            <Link
+              href="/"
+              className="flex-shrink-0 inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[#025a9a] focus:ring-offset-2 rounded-lg"
+              aria-label="KBK Community Closet – Home"
+            >
+              <img
+                src="/images/nav-rack.png"
+                alt=""
+                width={120}
+                height={56}
+                className="h-10 w-auto sm:h-12"
+                fetchPriority="high"
+              />
+            </Link>
+            <div className="flex justify-end">
               {/* Hamburger button */}
               <button
                 onClick={() => setIsOpen(true)}
@@ -83,7 +91,7 @@ export default function Navigation() {
       >
         {/* Drawer header with close button */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
-          <span className="text-lg font-medium text-gray-900">Menu</span>
+          <span className="text-lg font-medium text-[#025a9a]">Menu</span>
           <button
             onClick={() => setIsOpen(false)}
             className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#036bb6]"

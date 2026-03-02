@@ -150,27 +150,14 @@ export function RequestForm() {
       />
 
       {/* 3. Additional requested clothing */}
-      {formData.clothingRequests.map((request, index) => (
-        <ClothingRequestSection
-          key={request.id}
-          request={request}
-          index={index}
-          onSizeChange={(size) => updateClothingSize(request.id, size)}
-          onGenderChange={(gender) => updateClothingGender(request.id, gender)}
-          onClothingTypesChange={(types) => updateClothingTypes(request.id, types)}
-          onRemove={() => removeClothingRequest(request.id)}
-          showRemove={formData.clothingRequests.length > 1}
-        />
-      ))}
-
-      <button
-        type="button"
-        onClick={addClothingRequest}
-        className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#025a9a]/30 px-4 py-3 text-[#025a9a] font-medium hover:bg-[#025a9a]/5 hover:border-[#025a9a]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
-      >
-        <span aria-hidden>+</span>
-        Add another clothing request
-      </button>
+      <ClothingRequestSection
+        clothingRequests={formData.clothingRequests}
+        onSizeChange={updateClothingSize}
+        onGenderChange={updateClothingGender}
+        onClothingTypesChange={updateClothingTypes}
+        onRemove={removeClothingRequest}
+        onAdd={addClothingRequest}
+      />
 
       {/* 4. Gear requests */}
       <GearRequestSection
