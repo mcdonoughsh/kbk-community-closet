@@ -15,7 +15,7 @@ export default function DonatePage() {
     <div className="min-h-screen bg-[#e6f4ff] font-sans">
       {/* Hero */}
       <section
-        className="relative overflow-hidden px-4 pt-12 pb-20 sm:px-6 lg:px-8"
+        className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8"
         aria-labelledby="donate-heading"
       >
         <div className="mx-auto max-w-4xl text-center">
@@ -136,6 +136,7 @@ export default function DonatePage() {
           <div className="mt-8 space-y-6">
             <div className="rounded-2xl overflow-hidden bg-white shadow-sm ring-1 ring-[#025a9a]/10">
               <div className="p-5 sm:p-6 border-b border-[#025a9a]/10">
+                <p className="text-[#171717] font-medium">Seven Mile Road Church</p>
                 <p className="text-[#171717] font-medium">
                   71 Portland Rd, Kennebunk, ME 04043
                 </p>
