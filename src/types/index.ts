@@ -26,6 +26,30 @@ export interface GearRequest {
   additionalInfo: string;
 }
 
+// Curated bag request (size + quantity)
+export type CuratedBagSize =
+  | 'Newborn'
+  | '0–3 months'
+  | '3–6 months'
+  | '6–9 months'
+  | '9–12 months'
+  | '12–18 months'
+  | '18–24 months'
+  | '2T'
+  | '3T'
+  | '4T and up';
+
+// Single curated bag entry (size + quantity)
+export interface CuratedBagRequest {
+  size: CuratedBagSize | null;
+  quantity: number;
+}
+
+// Curated bag entry in the list (has id for React keys and remove)
+export interface CuratedBagEntry extends CuratedBagRequest {
+  id: string;
+}
+
 // Contact information
 export interface ContactInfo {
   name: string;
@@ -36,6 +60,7 @@ export interface ContactInfo {
 // Complete form data
 export interface RequestFormData {
   contact: ContactInfo;
+  curatedBagRequests: CuratedBagEntry[];
   clothingRequests: ClothingRequest[];
   gearRequest: GearRequest;
 }

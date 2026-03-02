@@ -46,8 +46,8 @@ export function GearRequestSection({
   return (
     <kbk-form-section
       ref={sectionRef}
-      heading="Gear Requests"
-      description="Select any baby gear you need"
+      heading="4. Gear requests"
+      description="Select any baby gear you need (cribs, carriers, etc.)."
     >
       <div className="space-y-6">
         {/* Gear types */}

@@ -12,17 +12,32 @@ const submitRequestSchema = z.object({
     phone: z.string().min(1, "Phone is required"),
     email: z.string().email().optional().or(z.literal("")),
   }),
-  items: z
+  curatedBags: z
     .array(
       z.object({
-        itemTypeName: z.string().min(1, "Item type name is required"),
-        size: z.string().nullable().optional(),
-        gender: z.string().nullable().optional(),
+        size: z.string().min(1),
+        quantity: z.number().int().min(1).max(10),
       })
     )
-    .min(1, "At least one item is required"),
+    .optional(),
+  items: z.array(
+    z.object({
+      itemTypeName: z.string().min(1, "Item type name is required"),
+      size: z.string().nullable().optional(),
+      gender: z.string().nullable().optional(),
+    })
+  ),
   additionalInfo: z.string().optional(),
-});
+}).refine(
+  (data) =>
+    (data.curatedBags != null && data.curatedBags.length > 0) ||
+    data.items.length > 0,
+  {
+    message:
+      "At least one curated bag or one clothing/gear item is required",
+    path: ["items"],
+  }
+);
 
 /**
  * Zod schema for updating request status (protected)
@@ -58,7 +73,8 @@ export const requestRouter = router({
   submit: publicProcedure
     .input(submitRequestSchema)
     .mutation(async ({ ctx, input }) => {
-      const { contact, items, additionalInfo } = input;
+      const { contact, items, additionalInfo, curatedBags: _curatedBags } = input;
+      // curatedBags accepted for future persistence; data model TBD
 
       // Resolve item type names → IDs (case-insensitive)
       const requestedNames = items.map((i) => i.itemTypeName);

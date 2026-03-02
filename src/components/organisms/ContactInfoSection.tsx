@@ -48,7 +48,7 @@ export function ContactInfoSection({
   return (
     <kbk-form-section
       ref={sectionRef}
-      heading="Contact Information"
+      heading="1. Contact info"
       description="How can we reach you about your request?"
     >
       <div className="space-y-4">

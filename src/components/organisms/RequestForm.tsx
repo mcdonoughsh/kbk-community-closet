@@ -4,14 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 import { useRequestForm } from '@/hooks';
 import { trpc } from '@/lib/trpc';
 import { ContactInfoSection } from './ContactInfoSection';
+import { CuratedBagSection } from './CuratedBagSection';
 import { ClothingRequestSection } from './ClothingRequestSection';
 import { GearRequestSection } from './GearRequestSection';
 import type { RequestFormData } from '@/types';
 
 /**
  * Transform the local form data into the shape the API expects.
- * Each clothing type in each clothing request becomes a separate item.
- * Each gear type becomes a separate item (no size/gender).
+ * curatedBags: only entries with a size selected; each has size + quantity.
+ * items: clothing and gear (one API item per type per request).
  */
 function buildSubmitPayload(formData: RequestFormData) {
   const items: { itemTypeName: string; size: string | null; gender: string | null }[] = [];
@@ -36,12 +37,17 @@ function buildSubmitPayload(formData: RequestFormData) {
     });
   }
 
+  const curatedBags = formData.curatedBagRequests
+    .filter((entry) => entry.size != null && entry.quantity >= 1)
+    .map((entry) => ({ size: entry.size!, quantity: entry.quantity }));
+
   return {
     contact: {
       name: formData.contact.name,
       phone: formData.contact.phone,
       email: formData.contact.email || undefined,
     },
+    curatedBags: curatedBags.length > 0 ? curatedBags : undefined,
     items,
     additionalInfo: formData.gearRequest.additionalInfo || undefined,
   };
@@ -57,6 +63,10 @@ export function RequestForm() {
     updateName,
     updatePhone,
     updateEmail,
+    addCuratedBagRequest,
+    removeCuratedBagRequest,
+    updateCuratedBagSize,
+    updateCuratedBagQuantity,
     addClothingRequest,
     removeClothingRequest,
     updateClothingSize,
@@ -71,63 +81,43 @@ export function RequestForm() {
   const submitMutation = trpc.request.submit.useMutation();
   const [submitted, setSubmitted] = useState(false);
 
-  const addButtonRef = useRef<HTMLElement>(null);
-  const submitButtonRef = useRef<HTMLElement>(null);
+  const handleSubmitClick = async () => {
+    if (!isValid || submitMutation.isPending) return;
 
-  // Handle add clothing request button
-  useEffect(() => {
-    const button = addButtonRef.current;
-    if (!button) return;
+    const payload = buildSubmitPayload(formData);
+    const hasCuratedBags = payload.curatedBags != null && payload.curatedBags.length > 0;
+    const hasItems = payload.items.length > 0;
 
-    const handleClick = () => addClothingRequest();
-    button.addEventListener('kbk-add-click', handleClick);
-    return () => button.removeEventListener('kbk-add-click', handleClick);
-  }, [addClothingRequest]);
+    if (!hasCuratedBags && !hasItems) {
+      alert('Please request at least one curated bag (pick a size and quantity) or add specific clothing or gear items.');
+      return;
+    }
 
-  // Handle submit button
-  useEffect(() => {
-    const button = submitButtonRef.current;
-    if (!button) return;
-
-    const handleClick = async () => {
-      if (!isValid || submitMutation.isPending) return;
-
-      const payload = buildSubmitPayload(formData);
-
-      // Must have at least one item
-      if (payload.items.length === 0) {
-        alert('Please select at least one clothing or gear item.');
-        return;
-      }
-
-      try {
-        await submitMutation.mutateAsync(payload);
-        setSubmitted(true);
-        resetForm();
-      } catch (err) {
-        console.error('Submit error:', err);
-        alert('Something went wrong submitting your request. Please try again.');
-      }
-    };
-
-    button.addEventListener('kbk-button-click', handleClick);
-    return () => button.removeEventListener('kbk-button-click', handleClick);
-  }, [isValid, formData, submitMutation, resetForm]);
+    try {
+      await submitMutation.mutateAsync(payload);
+      setSubmitted(true);
+      resetForm();
+    } catch (err) {
+      console.error('Submit error:', err);
+      alert('Something went wrong submitting your request. Please try again.');
+    }
+  };
 
   // Success state
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto text-center py-16 space-y-4">
         <div className="text-5xl">🎉</div>
-        <h2 className="text-2xl font-medium text-gray-900">
+        <h2 className="text-2xl font-medium text-[#171717]">
           Request Submitted!
         </h2>
-        <p className="text-gray-600">
+        <p className="text-[#171717]/80">
           Thank you! We&apos;ve received your request and will be in touch soon.
         </p>
         <button
+          type="button"
           onClick={() => setSubmitted(false)}
-          className="mt-4 px-6 py-2 rounded-lg bg-[var(--kbk-primary,#3b82f6)] text-white hover:opacity-90 transition-opacity"
+          className="mt-4 rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
         >
           Submit Another Request
         </button>
@@ -138,9 +128,9 @@ export function RequestForm() {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="space-y-6 max-w-2xl mx-auto"
+      className="space-y-8 max-w-2xl mx-auto"
     >
-      {/* Contact Information */}
+      {/* 1. Contact info */}
       <ContactInfoSection
         name={formData.contact.name}
         phone={formData.contact.phone}
@@ -150,7 +140,16 @@ export function RequestForm() {
         onEmailChange={updateEmail}
       />
 
-      {/* Clothing Requests */}
+      {/* 2. Curated bags */}
+      <CuratedBagSection
+        curatedBagRequests={formData.curatedBagRequests}
+        onSizeChange={updateCuratedBagSize}
+        onQuantityChange={updateCuratedBagQuantity}
+        onAdd={addCuratedBagRequest}
+        onRemove={removeCuratedBagRequest}
+      />
+
+      {/* 3. Additional requested clothing */}
       {formData.clothingRequests.map((request, index) => (
         <ClothingRequestSection
           key={request.id}
@@ -164,12 +163,16 @@ export function RequestForm() {
         />
       ))}
 
-      {/* Add another clothing request button */}
-      <div className="flex justify-center">
-        <kbk-add-button ref={addButtonRef} />
-      </div>
+      <button
+        type="button"
+        onClick={addClothingRequest}
+        className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#025a9a]/30 px-4 py-3 text-[#025a9a] font-medium hover:bg-[#025a9a]/5 hover:border-[#025a9a]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
+      >
+        <span aria-hidden>+</span>
+        Add another clothing request
+      </button>
 
-      {/* Gear Requests */}
+      {/* 4. Gear requests */}
       <GearRequestSection
         gearRequest={formData.gearRequest}
         onGearTypesChange={updateGearTypes}
@@ -178,14 +181,14 @@ export function RequestForm() {
 
       {/* Submit Button */}
       <div className="pt-4">
-        <kbk-button
-          ref={submitButtonRef}
-          variant="primary"
-          type="submit"
-          disabled={!isValid || submitMutation.isPending || undefined}
+        <button
+          type="button"
+          onClick={handleSubmitClick}
+          disabled={!isValid || submitMutation.isPending}
+          className="w-full sm:w-auto rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitMutation.isPending ? 'Submitting...' : 'Submit Request'}
-        </kbk-button>
+        </button>
       </div>
 
       {/* Error message from API */}

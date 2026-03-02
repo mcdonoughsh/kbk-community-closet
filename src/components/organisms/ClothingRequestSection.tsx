@@ -84,8 +84,8 @@ export function ClothingRequestSection({
 
   return (
     <kbk-form-section
-      heading={`Clothing Request ${index + 1}`}
-      description="Select size, gender, and types of clothing needed"
+      heading={index === 0 ? '3. Additional requested clothing' : `Request ${index + 1}`}
+      description={index === 0 ? 'Need specific items? Add size, gender, and types for each request.' : 'Select size, gender, and types of clothing needed.'}
     >
       <div className="space-y-6">
         {/* Size selection */}
@@ -121,7 +121,7 @@ export function ClothingRequestSection({
             <button
               type="button"
               onClick={onRemove}
-              className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+              className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
               aria-label="Delete clothing request"
             >
               <TrashIcon />

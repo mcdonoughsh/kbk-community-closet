@@ -54,22 +54,22 @@ export class KbkFormSection extends HTMLElement {
         }
         
         .section {
-          background: var(--kbk-card, #ffffff);
-          border-radius: var(--kbk-radius-lg, 12px);
+          background: white;
+          border-radius: 12px;
           padding: 1.5rem;
-          border-left: 4px solid var(--kbk-background, #e6f4ff);
+          border: 1px solid rgba(2, 90, 154, 0.1);
         }
         
         .heading {
           font-size: 1.25rem;
           font-weight: 600;
-          color: var(--kbk-text, #171717);
+          color: #171717;
           margin: 0 0 0.25rem 0;
         }
         
         .description {
           font-size: 0.875rem;
-          color: var(--kbk-text-muted, #6b7280);
+          color: rgba(23, 23, 23, 0.8);
           margin: 0 0 1rem 0;
           line-height: 1.5;
         }

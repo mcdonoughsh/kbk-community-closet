@@ -6,17 +6,27 @@ import type {
   Gender,
   ClothingType,
   GearType,
+  CuratedBagSize,
+  CuratedBagEntry,
 } from '@/types';
 
-// Generate unique ID for clothing requests
-const generateId = () => `clothing-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+// Generate unique ID for list entries
+const generateId = (prefix: string) =>
+  `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
 // Initial empty clothing request
 const createEmptyClothingRequest = (): ClothingRequest => ({
-  id: generateId(),
+  id: generateId('clothing'),
   size: null,
   gender: null,
   clothingTypes: [],
+});
+
+// Initial empty curated bag entry
+const createEmptyCuratedBagEntry = (): CuratedBagEntry => ({
+  id: generateId('curated'),
+  size: null,
+  quantity: 1,
 });
 
 // Initial form state
@@ -26,6 +36,7 @@ const createInitialFormData = (): RequestFormData => ({
     phone: '',
     email: '',
   },
+  curatedBagRequests: [createEmptyCuratedBagEntry()],
   clothingRequests: [createEmptyClothingRequest()],
   gearRequest: {
     gearTypes: [],
@@ -40,7 +51,13 @@ interface UseRequestFormReturn {
   updateName: (name: string) => void;
   updatePhone: (phone: string) => void;
   updateEmail: (email: string) => void;
-  
+
+  // Curated bag request methods (multiple entries)
+  addCuratedBagRequest: () => void;
+  removeCuratedBagRequest: (id: string) => void;
+  updateCuratedBagSize: (id: string, size: CuratedBagSize | null) => void;
+  updateCuratedBagQuantity: (id: string, quantity: number) => void;
+
   // Clothing request methods
   addClothingRequest: () => void;
   removeClothingRequest: (id: string) => void;
@@ -82,6 +99,39 @@ export function useRequestForm(): UseRequestFormReturn {
     setFormData((prev) => ({
       ...prev,
       contact: { ...prev.contact, email },
+    }));
+  }, []);
+
+  // Curated bag request methods
+  const addCuratedBagRequest = useCallback(() => {
+    setFormData((prev) => ({
+      ...prev,
+      curatedBagRequests: [...prev.curatedBagRequests, createEmptyCuratedBagEntry()],
+    }));
+  }, []);
+
+  const removeCuratedBagRequest = useCallback((id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      curatedBagRequests: prev.curatedBagRequests.filter((entry) => entry.id !== id),
+    }));
+  }, []);
+
+  const updateCuratedBagSize = useCallback((id: string, size: CuratedBagSize | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      curatedBagRequests: prev.curatedBagRequests.map((entry) =>
+        entry.id === id ? { ...entry, size } : entry
+      ),
+    }));
+  }, []);
+
+  const updateCuratedBagQuantity = useCallback((id: string, quantity: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      curatedBagRequests: prev.curatedBagRequests.map((entry) =>
+        entry.id === id ? { ...entry, quantity } : entry
+      ),
     }));
   }, []);
 
@@ -155,6 +205,10 @@ export function useRequestForm(): UseRequestFormReturn {
     updateName,
     updatePhone,
     updateEmail,
+    addCuratedBagRequest,
+    removeCuratedBagRequest,
+    updateCuratedBagSize,
+    updateCuratedBagQuantity,
     addClothingRequest,
     removeClothingRequest,
     updateClothingSize,
