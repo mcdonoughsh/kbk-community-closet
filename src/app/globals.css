@@ -8,6 +8,7 @@
   /* KBK Design Tokens */
   --kbk-primary: #036bb6;
   --kbk-primary-hover: #025a9a;
+  --kbk-primary-light: #5a9fd4; /* Supporting elements (e.g. onesie icon) — visible on white, doesn’t compete with CTAs */
   --kbk-secondary: #e5e7eb;
   --kbk-secondary-hover: #d1d5db;
   --kbk-background: #e6f4ff;
