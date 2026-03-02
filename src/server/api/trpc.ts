@@ -25,6 +25,12 @@ const t = initTRPC.context<Context>().create();
  * Resolves auth session and user profile for every request
  */
 export const createContext = async (): Promise<Context> => {
+  // Debug: env availability when API runs (remove after fixing)
+  if (process.env.NODE_ENV === "development") {
+    console.log("[tRPC createContext] SUPABASE_URL:", process.env.SUPABASE_URL ? `set (${process.env.SUPABASE_URL.slice(0, 30)}...)` : "MISSING");
+    console.log("[tRPC createContext] SUPABASE_ANON_KEY:", process.env.SUPABASE_ANON_KEY ? "set" : "MISSING");
+  }
+
   const supabase = await createClient();
   const {
     data: { user },
