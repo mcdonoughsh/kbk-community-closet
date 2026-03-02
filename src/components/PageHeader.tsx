@@ -32,7 +32,7 @@ export default function PageHeader({ title, subtitle }: PageHeaderProps) {
         
         {/* Subtitle */}
         {subtitle && (
-          <p className="text-base sm:text-lg lg:text-xl text-gray-700 text-center mb-8 sm:mb-10 z-20">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-700 text-center z-20">
             {subtitle}
           </p>
         )}

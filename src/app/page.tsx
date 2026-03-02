@@ -6,7 +6,7 @@ import OnesieIcon from "@/components/OnesieIcon";
 export const metadata: Metadata = {
   title: "Home",
   description:
-    "KBK Community Closet provides curated bags of seasonal basics for families—by size. Request a bag or donate to support your community.",
+    "KBK Community Closet provides curated bags of seasonal basics for families. Request a bag or donate to support your community.",
 };
 
 const SIZES = [
@@ -28,7 +28,7 @@ export default function Home() {
       {/* Hero */}
       <PageHeader
         title="KBK Community Closet"
-        subtitle="Curated bags of seasonal basics for families—by size."
+        subtitle="Curated bags of seasonal basics for families"
       />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center -mt-2 mb-4">
@@ -68,7 +68,7 @@ export default function Home() {
             How we curate
           </h2>
           <p className="text-center text-[var(--kbk-text-muted)] text-lg sm:text-xl max-w-2xl mx-auto mb-12 sm:mb-16">
-            We focus on seasonal basics—clothes and essentials that families use
+            We focus on seasonal basics clothes and essentials that families use
             every day. You get a bag built for your child’s size.
           </p>
 
@@ -79,7 +79,7 @@ export default function Home() {
                   Bags by size
                 </h3>
                 <p className="text-[var(--kbk-text-muted)]">
-                  We put together bags for newborn, 6–9 months, and up—as high as
+                  We put together bags for newborn, 3-6 months, 6-9 months, and up as high as
                   we can go. Each bag is built around one size so you get a set
                   that fits.
                 </p>
@@ -90,7 +90,7 @@ export default function Home() {
                 </h3>
                 <p className="text-[var(--kbk-text-muted)]">
                   We aim to give families as much of the basics as we can,
-                  season by season—so you’re covered when it matters.
+                  season by season so you’re covered when it matters.
                 </p>
               </div>
               <div>
@@ -107,8 +107,8 @@ export default function Home() {
                   Special items when we have them
                 </h3>
                 <p className="text-[var(--kbk-text-muted)]">
-                  Sometimes we have bigger items—like a highchair or other
-                  gear—donated by the community. When we do, we share them.
+                  Sometimes we have bigger items like a highchair or other
+                  gear donated by the community. When we do, we share them.
                 </p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function Home() {
             Sizes we cover
           </h2>
           <p className="text-center text-[var(--kbk-text-muted)] text-base sm:text-lg mb-10">
-            From newborn through 4T and up—we go as high as we can.
+            From newborn through 4T and up. We try to supply based on need and inventory.
           </p>
           <ul className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {SIZES.map((size) => (
@@ -153,7 +153,7 @@ export default function Home() {
           <h2 className="text-xl sm:text-2xl font-semibold text-[var(--kbk-text)] mb-3">
             Ready to request or donate?
           </h2>
-          <p className="text-[var(--kbk-text-muted)] text-base sm:text-lg mb-8">
+          <p className="text-[var(--kbk-text-muted)] text-base sm:text-lg mb-10">
             Request a curated bag for your child’s size, or donate items to help
             families in the community.
           </p>
