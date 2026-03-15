@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FeaturedGearCard } from "@/components/organisms/FeaturedGearCard";
 import OnesieIcon from "@/components/OnesieIcon";
+import { getFeaturedGear } from "@/lib/contentful";
 
 export const metadata: Metadata = {
   title: "Home",
   description:
-    "KBK Community Closet provides curated bags of seasonal basics for families. Request a bag or donate to support your community.",
+    "At the Kennebunk Community Closet, we believe every child deserves clothing that fits, feels good, and supports their growth—without financial stress on their family. We value dignity, generosity, sustainability, and community care. Our work is grounded in the belief that neighbors helping neighbors strengthens everyone, and that sharing resources thoughtfully helps families thrive while reducing waste.",
 };
 
 const SIZES = [
@@ -21,7 +23,9 @@ const SIZES = [
   "4T and up",
 ];
 
-export default function Home() {
+export default async function Home() {
+  const featuredGear = await getFeaturedGear();
+
   return (
     <div className="min-h-screen bg-[#e6f4ff] font-sans">
       {/* Hero — same rhythm as donate / request */}
@@ -37,8 +41,7 @@ export default function Home() {
             KBK Community Closet
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-[#171717]/80 leading-relaxed">
-            Curated bags of seasonal basics for families. We put together bags so
-            you get what you need. Request one, or help by donating.
+            At the Kennebunk Community Closet, we believe every child deserves clothing that fits, feels good, and supports their growth without financial stress on their family. We value dignity, generosity, sustainability, and community care. Our work is grounded in the belief that neighbors helping neighbors strengthens everyone, and that sharing resources thoughtfully helps families thrive while reducing waste.
           </p>
         </div>
       </section>
@@ -58,6 +61,35 @@ export default function Home() {
           Donate
         </Link>
       </div>
+
+      {/* Featured Gear — only when we have items */}
+      {featuredGear.length > 0 && (
+        <section
+          className="px-4 py-16 sm:px-6 lg:px-8"
+          aria-labelledby="featured-gear-heading"
+        >
+          <div className="mx-auto max-w-5xl">
+            <h2
+              id="featured-gear-heading"
+              className="text-2xl sm:text-3xl font-semibold text-[#025a9a] tracking-tight text-center mb-4"
+            >
+              Featured Gear
+            </h2>
+            <p className="text-center text-[var(--kbk-text-muted)] text-lg max-w-2xl mx-auto mb-10">
+              Donated items from the community that you can request when
+              available.
+            </p>
+            <ul
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              role="list"
+            >
+              {featuredGear.map((item) => (
+                <FeaturedGearCard key={item.id} item={item} />
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       {/* How we curate — main focus */}
       <section

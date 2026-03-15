@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
+import Navigation from "@/components/organisms/Navigation";
 import JsonLd from "@/components/JsonLd";
 import { TRPCProvider } from "@/components/TRPCProvider";
 

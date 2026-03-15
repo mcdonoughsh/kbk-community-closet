@@ -74,3 +74,19 @@ export interface ChipOption<T = string> {
 
 // Selection mode for chip groups
 export type SelectionMode = 'single' | 'multiple';
+
+// Featured gear item from Contentful (donated products people can request)
+export type FeaturedGearStatus = "available" | "claimed";
+
+export interface FeaturedGearItem {
+  id: string;
+  title: string;
+  description: string;
+  status: FeaturedGearStatus;
+  image: {
+    url: string;
+    width: number;
+    height: number;
+    alt: string | null;
+  } | null;
+}
