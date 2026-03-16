@@ -31,9 +31,9 @@ export default async function Home() {
       {/* Promo banner */}
       <div
         id="promo-banner"
-        className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-3 sm:px-6 bg-[#ffaa06]"
+        className="flex flex-col items-center gap-2 px-4 py-3 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 bg-[#ffaa06]"
       >
-        <div />
+        <div className="hidden sm:block" aria-hidden />
         <div id="promo-banner-text" className="flex flex-col items-center justify-center gap-0">
           <Image
             src="/images/homepage/promo/spring-event-text.png"
@@ -45,10 +45,10 @@ export default async function Home() {
           />
           <h1 className="text-[#e45e5e] text-lg font-semibold">Mothers Day Pop-up</h1>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-center sm:justify-end">
           <Link
             href="/events"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:text-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#e67e22]"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#025a9a] hover:text-[#025a9a]/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffaa06]"
           >
             See events
             <svg
