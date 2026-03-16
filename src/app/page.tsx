@@ -31,7 +31,7 @@ export default async function Home() {
       {/* Promo banner */}
       <div
         id="promo-banner"
-        className="flex flex-col items-center gap-2 px-4 py-3 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 bg-[#ffaa06]"
+        className="flex flex-col items-center gap-1 px-4 py-3 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6 bg-[#ffaa06]"
       >
         <div className="hidden sm:block" aria-hidden />
         <div id="promo-banner-text" className="flex flex-col items-center justify-center gap-0">
