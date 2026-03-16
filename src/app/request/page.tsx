@@ -30,7 +30,7 @@ export default function RequestPage() {
 
       {/* Form: four distinct sections (contact, curated bags, clothing, gear) */}
       <section
-        className="px-4 py-8 sm:px-6 lg:px-8 pb-16"
+        className="px-4 sm:px-6 lg:px-8 pb-16"
         aria-label="Request form"
       >
         <div className="mx-auto max-w-4xl">

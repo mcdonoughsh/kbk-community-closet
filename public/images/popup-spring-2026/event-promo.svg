@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 248 400 88" width="400" height="88">
+  <defs>
+    <pattern id="orangeGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Orange strip (top of visible area) -->
+  <rect x="12" y="248" width="376" height="4" fill="#f97316"/>
+  <rect x="12" y="248" width="376" height="4" fill="url(#orangeGrid)"/>
+
+  <!-- Light blue strip (bottom of visible area) -->
+  <rect x="12" y="252" width="376" height="84" fill="#7dd3fc"/>
+
+  <!-- Clothing rack (white bar and posts) -->
+  <rect x="120" y="268" width="160" height="8" rx="2" fill="white"/>
+  <rect x="128" y="268" width="6" height="50" fill="white"/>
+  <rect x="266" y="268" width="6" height="50" fill="white"/>
+
+  <!-- Hanging clothes (simplified shapes) -->
+  <!-- Light blue jumpsuit -->
+  <rect x="132" y="278" width="28" height="42" rx="2" fill="#7dd3fc" stroke="#0ea5e9" stroke-width="1"/>
+  <rect x="136" y="282" width="20" height="12" fill="#0ea5e9"/>
+
+  <!-- Red top / light blue bottom -->
+  <rect x="166" y="278" width="26" height="22" fill="#dc2626"/>
+  <rect x="166" y="300" width="26" height="20" fill="#7dd3fc"/>
+
+  <!-- Yellow top + white skirt -->
+  <rect x="198" y="278" width="24" height="20" fill="#eab308"/>
+  <rect x="198" y="298" width="24" height="22" fill="white" stroke="#e5e5e5" stroke-width="1"/>
+
+  <!-- Red dress with dots -->
+  <rect x="228" y="278" width="26" height="42" rx="2" fill="#dc2626"/>
+  <circle cx="237" cy="292" r="2" fill="white"/>
+  <circle cx="237" cy="300" r="2" fill="white"/>
+  <circle cx="237" cy="308" r="2" fill="white"/>
+  <circle cx="237" cy="316" r="2" fill="white"/>
+
+  <!-- Blue top with stripe -->
+  <rect x="260" y="278" width="24" height="42" fill="#2563eb"/>
+  <rect x="260" y="292" width="24" height="6" fill="#7dd3fc"/>
+
+  <!-- White dress with polka dots -->
+  <rect x="290" y="278" width="24" height="42" rx="2" fill="white" stroke="#e5e5e5" stroke-width="1"/>
+  <circle cx="297" cy="288" r="2" fill="#1f2937"/>
+  <circle cx="307" cy="288" r="2" fill="#1f2937"/>
+  <circle cx="297" cy="298" r="2" fill="#1f2937"/>
+  <circle cx="307" cy="298" r="2" fill="#1f2937"/>
+  <circle cx="297" cy="308" r="2" fill="#1f2937"/>
+  <circle cx="307" cy="308" r="2" fill="#1f2937"/>
+</svg>

@@ -35,7 +35,7 @@ export default function DonatePage() {
 
       {/* What we need */}
       <section
-        className="px-4 py-16 sm:px-6 lg:px-8"
+        className="px-4 pb-16 pt-0 sm:px-6 lg:px-8"
         aria-labelledby="guidelines-heading"
       >
         <div className="mx-auto max-w-4xl">

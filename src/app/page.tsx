@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { FeaturedGearCard } from "@/components/organisms/FeaturedGearCard";
-import OnesieIcon from "@/components/OnesieIcon";
 import { getFeaturedGear } from "@/lib/contentful";
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default async function Home() {
           >
             KBK Community Closet
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-[#171717]/80 leading-relaxed">
+          <p className="mt-6 mx-auto text-lg sm:text-xl text-[#171717]/80 leading-relaxed">
             At the Kennebunk Community Closet, we believe every child deserves clothing that fits, feels good, and supports their growth without financial stress on their family. We value dignity, generosity, sustainability, and community care. Our work is grounded in the belief that neighbors helping neighbors strengthens everyone, and that sharing resources thoughtfully helps families thrive while reducing waste.
           </p>
         </div>
@@ -50,13 +50,13 @@ export default async function Home() {
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 mb-16 sm:mb-24">
         <Link
           href="/request"
-          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-primary)] text-white rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-primary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
+          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-primary)] text-white rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-primary-hover)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2"
         >
           Request
         </Link>
         <Link
           href="/donate"
-          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-[var(--kbk-primary)] rounded-xl text-base sm:text-lg font-semibold border-1 border-[var(--kbk-primary)] hover:bg-[var(--kbk-primary)]/5 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
+          className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-[var(--kbk-primary)] rounded-xl text-base sm:text-lg font-semibold border-1 border-[var(--kbk-primary)] hover:bg-[var(--kbk-primary)]/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2"
         >
           Donate
         </Link>
@@ -109,8 +109,8 @@ export default async function Home() {
             every day. You get a bag built for your child’s size.
           </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-stretch">
-            <div className="order-2 lg:order-1 space-y-6">
+          <div className="flex flex-col gap-12 sm:gap-16">
+            <div className="space-y-6 max-w-2xl mx-auto">
               <div>
                 <h3 className="text-lg font-semibold text-[var(--kbk-text)] mb-2">
                   Bags by size
@@ -149,8 +149,25 @@ export default async function Home() {
                 </p>
               </div>
             </div>
-            <div className="order-1 lg:order-2 flex items-center justify-center min-h-[240px] lg:min-h-0 h-full">
-              <OnesieIcon className="h-full max-h-[320px] lg:max-h-none w-auto drop-shadow-md" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 space-y-6 max-w-2xl mx-auto">
+              <Image
+                src="/images/homepage/boy-bag.jpg"
+                alt="Curated bag of children’s clothes by size from the community closet"
+                width={560}
+                height={420}
+                className="w-full h-auto rounded-xl shadow-md object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+                loading="lazy"
+              />
+              <Image
+                src="/images/homepage/table-pjs.jpeg"
+                alt="Seasonal children’s clothes and pajamas laid out on a table"
+                width={560}
+                height={420}
+                className="w-full h-auto rounded-xl shadow-md object-cover"
+                sizes="(max-width: 640px) 100vw, 50vw"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
@@ -197,13 +214,13 @@ export default async function Home() {
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <Link
               href="/request"
-              className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-primary)] text-white rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-primary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
+              className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-primary)] text-white rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-primary-hover)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2"
             >
               Request
             </Link>
             <Link
               href="/donate"
-              className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-secondary)] text-[var(--kbk-text)] rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-secondary-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary)] focus:ring-offset-2"
+              className="inline-flex items-center justify-center px-6 sm:px-8 py-3.5 sm:py-4 bg-[var(--kbk-secondary)] text-[var(--kbk-text)] rounded-xl text-base sm:text-lg font-semibold hover:bg-[var(--kbk-secondary-hover)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2"
             >
               Donate
             </Link>
