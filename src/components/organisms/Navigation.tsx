@@ -39,7 +39,7 @@ export default function Navigation() {
               aria-label="KBK Community Closet – Home"
             >
               <img
-                src="/images/clothing-rack.svg"
+                src="/images/nav-rack.svg"
                 alt=""
                 width={120}
                 height={56}
