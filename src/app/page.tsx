@@ -70,7 +70,7 @@ export default async function Home() {
       <div className="min-h-screen bg-[#e6f4ff] font-sans">
         {/* Hero — same rhythm as donate / request */}
         <section
-          className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8"
+          className="relative overflow-hidden px-10 py-10 sm:px-6 sm:py-16 lg:px-8"
           aria-labelledby="home-heading"
         >
           <div className="mx-auto max-w-4xl text-center">
