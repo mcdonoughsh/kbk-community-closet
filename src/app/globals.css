@@ -10,6 +10,7 @@
   --kbk-primary-hover: #025a9a;
   --kbk-primary-light: #5a9fd4; /* Supporting elements — visible on white, doesn’t compete with CTAs */
   --kbk-cream: #d76737; /* Warm orange–red; for supporting visuals (e.g. onesie icon) */
+  --kbk-girl: #c42323; /* Girl / feminine gender accent (pairs with --kbk-cream for boy) */
   --kbk-secondary: #e5e7eb;
   --kbk-secondary-hover: #d1d5db;
   --kbk-background: #e6f4ff;

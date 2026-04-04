@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, type ReactNode } from "react";
 import { trpc } from "@/lib/trpc";
 import type { RequestStatus, Role, ItemCategory } from "@prisma/client";
 
@@ -42,9 +42,7 @@ interface RequestsTableProps {
 
 type SortField =
   | "name"
-  | "phone"
-  | "email"
-  | "sizes"
+  | "contact"
   | "items"
   | "status"
   | "date";
@@ -59,56 +57,196 @@ const statusColors: Record<RequestStatus, string> = {
   FULFILLED: "bg-green-100 text-green-800",
 };
 
-/** Extract unique sizes from a request's items, sorted */
-function getSizes(items: RequestWithRelations["items"]): string {
-  const sizes = [
-    ...new Set(
-      items.filter((i) => i.size).map((i) => i.size as string)
-    ),
-  ];
-  return sizes.join(", ") || "—";
+/** Size labels in Items requested — primary blue, no chip chrome */
+const SIZE_TEXT_CLASS = "font-medium text-[var(--kbk-primary,#036bb6)]";
+
+/** Middle dot between size and gender (keys + display); U+00B7 */
+const SIZE_GENDER_SEP = " · ";
+
+/** Boy → brand orange, Girl / Girls → brand red (curated bags + clothing) */
+function genderAccentClass(gender: string): string {
+  const n = gender.trim().toLowerCase();
+  if (n === "boy") return "text-[var(--kbk-cream)] font-medium";
+  if (n === "girl" || n === "girls") return "text-[var(--kbk-girl)] font-medium";
+  return "text-gray-700";
 }
 
-/** Format items into a readable summary */
-function formatItems(items: RequestWithRelations["items"]): string {
+function getClothingGrouped(
+  clothing: RequestWithRelations["items"]
+): Record<string, { types: string[]; firstId: string }> {
+  return clothing.reduce(
+    (acc, item) => {
+      const key = `${item.size || "?"}${SIZE_GENDER_SEP}${item.gender || "?"}`;
+      if (!acc[key]) acc[key] = { types: [], firstId: item.id };
+      acc[key].types.push(item.itemType.name);
+      return acc;
+    },
+    {} as Record<string, { types: string[]; firstId: string }>
+  );
+}
+
+function parseClothingGroupKey(key: string): { size: string; gender: string } {
+  const i = key.indexOf(SIZE_GENDER_SEP);
+  if (i === -1) return { size: key, gender: "?" };
+  return {
+    size: key.slice(0, i),
+    gender: key.slice(i + SIZE_GENDER_SEP.length),
+  };
+}
+
+/** Middle dot (~30px); parent row should use flex items-center for alignment */
+function DotSeparator() {
+  return (
+    <span
+      className="shrink-0 select-none text-[30px] leading-none text-gray-400"
+      aria-hidden
+    >
+      ·
+    </span>
+  );
+}
+
+const ITEMS_SECTION_HEADING =
+  "text-xs font-bold uppercase tracking-wide text-[var(--kbk-primary,#036bb6)]";
+
+function ItemsSectionHeading({ children }: { children: ReactNode }) {
+  return <p className={`${ITEMS_SECTION_HEADING} mb-1.5`}>{children}</p>;
+}
+
+function gearItemsWithNames(
+  gear: RequestWithRelations["items"]
+): RequestWithRelations["items"] {
+  return gear.filter(
+    (g) => (g.itemType.name ?? "").trim().length > 0
+  );
+}
+
+/** Items column: same data as formatItems() */
+function ItemsRequestedDisplay({
+  items,
+}: {
+  items: RequestWithRelations["items"];
+}) {
   const curated = items.filter((i) => i.itemType.category === "CURATED_BAG");
   const clothing = items.filter((i) => i.itemType.category === "CLOTHING");
   const gear = items.filter((i) => i.itemType.category === "GEAR");
-  const parts: string[] = [];
+  const gearDisplay = gearItemsWithNames(gear);
 
-  // One line per RequestItem so multiple bags (even same size/gender) stay distinct
+  const hasCurated = curated.length > 0;
+  const hasClothing = clothing.length > 0;
+  const hasGear = gearDisplay.length > 0;
+
+  if (!hasCurated && !hasClothing && !hasGear) {
+    return <span className="text-gray-300">—</span>;
+  }
+
+  const showCuratedQtyEach = curated.length > 1;
+  const clothingGrouped = hasClothing ? getClothingGrouped(clothing) : {};
+
+  return (
+    <div className="flex flex-col gap-4">
+      {hasCurated && (
+        <div>
+          <ItemsSectionHeading>Curated bags</ItemsSectionHeading>
+          <div className="flex flex-col gap-1.5">
+            {curated.map((c) => {
+              const qty =
+                c.quantity > 1 || showCuratedQtyEach ? ` ×${c.quantity}` : "";
+              return (
+                <p
+                  key={c.id}
+                  className="flex flex-wrap items-center gap-x-1.5 text-sm leading-relaxed text-gray-700"
+                >
+                  <span className={SIZE_TEXT_CLASS}>{c.size || "?"}</span>
+                  {c.gender ? (
+                    <>
+                      <DotSeparator />
+                      <span className={genderAccentClass(c.gender)}>
+                        {c.gender}
+                      </span>
+                    </>
+                  ) : null}
+                  <span>{qty}</span>
+                </p>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {hasClothing && (
+        <div>
+          <ItemsSectionHeading>Clothing</ItemsSectionHeading>
+          <div className="flex flex-col gap-1.5">
+            {Object.entries(clothingGrouped).map(([key, { types, firstId }]) => {
+              const { size, gender } = parseClothingGroupKey(key);
+              return (
+                <p
+                  key={firstId}
+                  className="flex flex-wrap items-center gap-x-1.5 text-sm leading-relaxed text-gray-700"
+                >
+                  <span className={SIZE_TEXT_CLASS}>{size}</span>
+                  <DotSeparator />
+                  <span className={genderAccentClass(gender)}>{gender}</span>
+                  <DotSeparator />
+                  <span>{types.join(", ")}</span>
+                </p>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {hasGear && (
+        <div>
+          <ItemsSectionHeading>Gear</ItemsSectionHeading>
+          <p className="text-sm leading-relaxed text-gray-700">
+            {gearDisplay.map((g) => g.itemType.name).join(", ")}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Format items into a readable summary (matches ItemsRequestedDisplay sections) */
+function formatItems(items: RequestWithRelations["items"]): string {
+  const curated = items.filter((i) => i.itemType.category === "CURATED_BAG");
+  const clothing = items.filter((i) => i.itemType.category === "CLOTHING");
+  const gear = gearItemsWithNames(
+    items.filter((i) => i.itemType.category === "GEAR")
+  );
+  const sections: string[] = [];
+
   if (curated.length > 0) {
     const showQtyOnEachLine = curated.length > 1;
+    const lines: string[] = [];
     for (const c of curated) {
       const size = c.size || "?";
-      const genderPart = c.gender ? ` (${c.gender})` : "";
+      const genderPart = c.gender ? `${SIZE_GENDER_SEP}${c.gender}` : "";
       const qty =
         c.quantity > 1 || showQtyOnEachLine ? ` ×${c.quantity}` : "";
-      parts.push(`Curated: ${size}${genderPart}${qty}`);
+      lines.push(`${size}${genderPart}${qty}`);
     }
+    sections.push(`Curated bags\n${lines.join("\n")}`);
   }
 
   if (clothing.length > 0) {
-    const grouped = clothing.reduce(
-      (acc, item) => {
-        const key = `${item.size || "?"} / ${item.gender || "?"}`;
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(item.itemType.name);
-        return acc;
-      },
-      {} as Record<string, string[]>
-    );
-
-    for (const [sizeGender, types] of Object.entries(grouped)) {
-      parts.push(`${sizeGender}: ${types.join(", ")}`);
+    const grouped = getClothingGrouped(clothing);
+    const lines: string[] = [];
+    for (const [sizeGender, { types }] of Object.entries(grouped)) {
+      lines.push(
+        `${sizeGender}${SIZE_GENDER_SEP}${types.join(", ")}`
+      );
     }
+    sections.push(`Clothing\n${lines.join("\n")}`);
   }
 
   if (gear.length > 0) {
-    parts.push(`Gear: ${gear.map((g) => g.itemType.name).join(", ")}`);
+    sections.push(`Gear\n${gear.map((g) => g.itemType.name).join(", ")}`);
   }
 
-  return parts.join("\n\n") || "—";
+  return sections.join("\n\n") || "—";
 }
 
 /** Get sortable value for a given field */
@@ -116,12 +254,11 @@ function getSortValue(req: RequestWithRelations, field: SortField): string {
   switch (field) {
     case "name":
       return req.contact.name.toLowerCase();
-    case "phone":
-      return req.contact.phone;
-    case "email":
-      return (req.contact.email || "").toLowerCase();
-    case "sizes":
-      return getSizes(req.items).toLowerCase();
+    case "contact": {
+      const phone = req.contact.phone;
+      const email = (req.contact.email || "").toLowerCase();
+      return `${phone} ${email}`;
+    }
     case "items":
       return formatItems(req.items).toLowerCase();
     case "status":
@@ -230,10 +367,12 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
     className?: string;
   }[] = [
     { label: "Name", field: "name" },
-    { label: "Phone", field: "phone" },
-    { label: "Email", field: "email" },
-    { label: "Sizes", field: "sizes" },
-    { label: "Items Requested", field: "items", className: "min-w-[200px]" },
+    { label: "Contact", field: "contact" },
+    {
+      label: "Items Requested",
+      field: "items",
+      className: "min-w-[22rem] w-[38%]",
+    },
     { label: "Status", field: "status" },
     { label: "Date", field: "date" },
     { label: "Actions", field: null },
@@ -284,46 +423,36 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
                   {req.contact.name || "—"}
                 </td>
 
-                {/* Phone */}
-                <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                  <a
-                    href={`tel:${req.contact.phone}`}
-                    className="hover:underline"
-                  >
-                    {req.contact.phone}
-                  </a>
-                </td>
-
-                {/* Email */}
-                <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                  {req.contact.email ? (
+                {/* Contact: phone + email */}
+                <td className="px-4 py-3 text-gray-600 align-top">
+                  <div className="flex flex-col gap-1 min-w-0 max-w-[16rem]">
                     <a
-                      href={`mailto:${req.contact.email}`}
-                      className="hover:underline"
+                      href={`tel:${req.contact.phone}`}
+                      className="hover:underline whitespace-nowrap"
                     >
-                      {req.contact.email}
+                      {req.contact.phone}
                     </a>
-                  ) : (
-                    <span className="text-gray-300">—</span>
-                  )}
-                </td>
-
-                {/* Sizes */}
-                <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                  {getSizes(req.items)}
+                    {req.contact.email ? (
+                      <a
+                        href={`mailto:${req.contact.email}`}
+                        className="hover:underline break-all text-[13px] leading-snug"
+                      >
+                        {req.contact.email}
+                      </a>
+                    ) : (
+                      <span className="text-gray-300 text-[13px]">—</span>
+                    )}
+                  </div>
                 </td>
 
                 {/* Items */}
-                <td className="px-4 py-3 text-gray-600 max-w-xs">
-                  <span
-                    className="whitespace-pre-line"
-                    title={formatItems(req.items)}
-                  >
-                    {formatItems(req.items)}
-                  </span>
+                <td className="px-4 py-3 text-gray-600 align-top min-w-0">
+                  <div title={formatItems(req.items)}>
+                    <ItemsRequestedDisplay items={req.items} />
+                  </div>
                   {req.additionalInfo && (
                     <p
-                      className="text-xs text-gray-400 mt-0.5 truncate max-w-[250px]"
+                      className="text-xs text-gray-400 mt-1.5 line-clamp-2"
                       title={req.additionalInfo}
                     >
                       Note: {req.additionalInfo}
