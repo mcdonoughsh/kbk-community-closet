@@ -20,6 +20,7 @@ const itemTypes: { name: string; category: ItemCategory }[] = [
   { name: "Carrier", category: "GEAR" },
   { name: "Pack-n-play", category: "GEAR" },
   { name: "Boppy", category: "GEAR" },
+  { name: "Curated bag", category: "CURATED_BAG" },
 ];
 
 async function seedItemTypes() {
@@ -37,22 +38,21 @@ async function seedItemTypes() {
   console.log(`✅ Seeded ${count} item types`);
 }
 
-async function seedAdminUser() {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!supabaseUrl || !supabaseServiceKey) {
-    console.log(
-      "⚠️  Skipping admin user seed — SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required."
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (value == null || value.trim() === "") {
+    throw new Error(
+      `Missing required environment variable: ${name}. Set it in your environment or .env before running the seed.`
     );
-    console.log(
-      "   Add SUPABASE_SERVICE_ROLE_KEY to your .env (found in Supabase Dashboard > Project Settings > API > service_role)"
-    );
-    return;
   }
+  return value;
+}
 
-  const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@kbkcommunity.org";
-  const adminPassword = process.env.SEED_ADMIN_PASSWORD || "ChangeMe123!";
+async function seedAdminUser() {
+  const supabaseUrl = requireEnv("SUPABASE_URL");
+  const supabaseServiceKey = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const adminEmail = requireEnv("SEED_ADMIN_EMAIL");
+  const adminPassword = requireEnv("SEED_ADMIN_PASSWORD");
 
   console.log(`Creating admin user: ${adminEmail}...`);
 
@@ -68,7 +68,13 @@ async function seedAdminUser() {
   let supabaseUserId: string;
 
   if (existing) {
-    console.log("  Auth user already exists, skipping creation");
+    console.log("  Auth user already exists, syncing password from SEED_ADMIN_PASSWORD");
+    const { error } = await supabase.auth.admin.updateUserById(existing.id, {
+      password: adminPassword,
+    });
+    if (error) {
+      throw new Error(`Failed to update auth user password: ${error.message}`);
+    }
     supabaseUserId = existing.id;
   } else {
     const { data, error } = await supabase.auth.admin.createUser({
@@ -78,8 +84,7 @@ async function seedAdminUser() {
     });
 
     if (error) {
-      console.error("❌ Failed to create auth user:", error.message);
-      return;
+      throw new Error(`Failed to create auth user: ${error.message}`);
     }
     supabaseUserId = data.user.id;
     console.log("  ✅ Auth user created");
@@ -106,10 +111,6 @@ async function seedAdminUser() {
 
   console.log(`✅ Admin user profile created (role: SUPER_ADMIN)`);
   console.log(`   Email: ${adminEmail}`);
-  if (!existing) {
-    console.log(`   Password: ${adminPassword}`);
-    console.log(`   ⚠️  Change this password after first login!`);
-  }
 }
 
 async function main() {

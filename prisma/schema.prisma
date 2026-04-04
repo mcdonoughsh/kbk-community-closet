@@ -27,6 +27,7 @@ enum RequestStatus {
 enum ItemCategory {
   CLOTHING
   GEAR
+  CURATED_BAG
 }
 
 // ─── Models ──────────────────────────────────────────────
@@ -87,6 +88,7 @@ model RequestItem {
   itemType   ItemType @relation(fields: [itemTypeId], references: [id])
   size       String?  // null for gear items
   gender     String?  // null for gear items
+  quantity   Int      @default(1)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   isDeleted  Boolean  @default(false)

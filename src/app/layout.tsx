@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/organisms/Navigation";
+import { GiveOnlineSection } from "@/components/organisms/GiveOnlineSection";
+import { GiveOnlineSectionGate } from "@/components/organisms/GiveOnlineSectionGate";
 import JsonLd from "@/components/JsonLd";
 import { TRPCProvider } from "@/components/TRPCProvider";
 
@@ -47,7 +49,12 @@ export default function RootLayout({
         <TRPCProvider>
           <JsonLd data={jsonLd} />
           <Navigation />
-          <main>{children}</main>
+          <main>
+            {children}
+            <GiveOnlineSectionGate>
+              <GiveOnlineSection />
+            </GiveOnlineSectionGate>
+          </main>
         </TRPCProvider>
       </body>
     </html>

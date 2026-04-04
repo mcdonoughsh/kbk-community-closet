@@ -20,6 +20,7 @@ type RequestWithRelations = {
     id: string;
     size: string | null;
     gender: string | null;
+    quantity: number;
     itemType: {
       name: string;
       category: ItemCategory;
@@ -70,9 +71,22 @@ function getSizes(items: RequestWithRelations["items"]): string {
 
 /** Format items into a readable summary */
 function formatItems(items: RequestWithRelations["items"]): string {
+  const curated = items.filter((i) => i.itemType.category === "CURATED_BAG");
   const clothing = items.filter((i) => i.itemType.category === "CLOTHING");
   const gear = items.filter((i) => i.itemType.category === "GEAR");
   const parts: string[] = [];
+
+  // One line per RequestItem so multiple bags (even same size/gender) stay distinct
+  if (curated.length > 0) {
+    const showQtyOnEachLine = curated.length > 1;
+    for (const c of curated) {
+      const size = c.size || "?";
+      const genderPart = c.gender ? ` (${c.gender})` : "";
+      const qty =
+        c.quantity > 1 || showQtyOnEachLine ? ` ×${c.quantity}` : "";
+      parts.push(`Curated: ${size}${genderPart}${qty}`);
+    }
+  }
 
   if (clothing.length > 0) {
     const grouped = clothing.reduce(
@@ -94,7 +108,7 @@ function formatItems(items: RequestWithRelations["items"]): string {
     parts.push(`Gear: ${gear.map((g) => g.itemType.name).join(", ")}`);
   }
 
-  return parts.join(" · ") || "—";
+  return parts.join("\n\n") || "—";
 }
 
 /** Get sortable value for a given field */
@@ -301,7 +315,10 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
 
                 {/* Items */}
                 <td className="px-4 py-3 text-gray-600 max-w-xs">
-                  <span title={formatItems(req.items)}>
+                  <span
+                    className="whitespace-pre-line"
+                    title={formatItems(req.items)}
+                  >
                     {formatItems(req.items)}
                   </span>
                   {req.additionalInfo && (

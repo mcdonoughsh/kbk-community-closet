@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { ChipGroup } from '@/components/molecules/ChipGroup';
-import type { CuratedBagEntry, CuratedBagSize, ChipOption } from '@/types';
+import type { CuratedBagEntry, CuratedBagSize, ChipOption, Gender } from '@/types';
 
 const curatedBagSizeOptions: ChipOption<CuratedBagSize>[] = [
   { value: 'Newborn', label: 'Newborn' },
@@ -15,6 +15,11 @@ const curatedBagSizeOptions: ChipOption<CuratedBagSize>[] = [
   { value: '2T', label: '2T' },
   { value: '3T', label: '3T' },
   { value: '4T and up', label: '4T and up' },
+];
+
+const genderOptions: ChipOption<Gender>[] = [
+  { value: 'Girl', label: 'Girl' },
+  { value: 'Boy', label: 'Boy' },
 ];
 
 function TrashIcon() {
@@ -42,6 +47,7 @@ interface CuratedBagSectionProps {
   curatedBagRequests: CuratedBagEntry[];
   onSizeChange: (id: string, size: CuratedBagSize | null) => void;
   onQuantityChange: (id: string, quantity: number) => void;
+  onGenderChange: (id: string, gender: Gender | null) => void;
   onAdd: () => void;
   onRemove: (id: string) => void;
 }
@@ -55,6 +61,7 @@ export function CuratedBagSection({
   curatedBagRequests,
   onSizeChange,
   onQuantityChange,
+  onGenderChange,
   onAdd,
   onRemove,
 }: CuratedBagSectionProps) {
@@ -105,7 +112,7 @@ export function CuratedBagSection({
                 </button>
               )}
             </div>
-            <div className="grid gap-4 sm:grid-cols-[1fr,auto]">
+            <div className="space-y-4">
               <ChipGroup
                 label="Size"
                 options={curatedBagSizeOptions}
@@ -113,7 +120,14 @@ export function CuratedBagSection({
                 onChange={(selected) => onSizeChange(entry.id, selected[0] ?? null)}
                 mode="single"
               />
-              <div className="min-w-[8rem]">
+              <ChipGroup
+                label="Gender (optional)"
+                options={genderOptions}
+                selected={entry.gender ? [entry.gender] : []}
+                onChange={(selected) => onGenderChange(entry.id, selected[0] ?? null)}
+                mode="single"
+              />
+              <div className="min-w-[8rem] max-w-[10rem]">
                 <kbk-input
                   label="Number of bags"
                   name={`${QUANTITY_INPUT_PREFIX}${entry.id}`}

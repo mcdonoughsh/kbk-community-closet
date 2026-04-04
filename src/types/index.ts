@@ -39,10 +39,11 @@ export type CuratedBagSize =
   | '3T'
   | '4T and up';
 
-// Single curated bag entry (size + quantity)
+// Single curated bag entry (size + quantity, optional gender)
 export interface CuratedBagRequest {
   size: CuratedBagSize | null;
   quantity: number;
+  gender: Gender | null;
 }
 
 // Curated bag entry in the list (has id for React keys and remove)

@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-// When GivingFire is ready, set this URL and swap the button for a link.
-const GIVING_FIRE_URL: string | null = null;
-
 export const metadata: Metadata = {
   title: "Donate",
   description:
@@ -169,47 +166,6 @@ export default function DonatePage() {
             <p className="text-[#025a9a] font-medium">
               Please do not leave donations outside or after hours.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Give online — GivingFire placeholder */}
-      <section
-        className="px-4 py-20 sm:px-6 lg:px-8 bg-[#025a9a]"
-        aria-labelledby="give-online-heading"
-      >
-        <div className="mx-auto max-w-2xl text-center">
-          <h2
-            id="give-online-heading"
-            className="text-2xl sm:text-3xl font-semibold text-white tracking-tight"
-          >
-            Give online
-          </h2>
-          <p className="mt-4 text-white/90 text-lg leading-relaxed">
-            Prefer to give financially? We&apos;re connecting with GivingFire so
-            you can support the closet online. That option will be available
-            here soon.
-          </p>
-          <div className="mt-8">
-            {GIVING_FIRE_URL ? (
-              <a
-                href={GIVING_FIRE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3.5 text-base font-semibold text-[#025a9a] shadow-sm transition-colors hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#025a9a]"
-              >
-                Donate via GivingFire
-              </a>
-            ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex items-center justify-center rounded-xl bg-white/90 px-6 py-3.5 text-base font-semibold text-[#025a9a] cursor-not-allowed opacity-90"
-                aria-label="GivingFire donation link coming soon"
-              >
-                GivingFire — coming soon
-              </button>
-            )}
           </div>
         </div>
       </section>

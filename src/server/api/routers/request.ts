@@ -17,6 +17,7 @@ const submitRequestSchema = z.object({
       z.object({
         size: z.string().min(1),
         quantity: z.number().int().min(1).max(10),
+        gender: z.string().nullable().optional(),
       })
     )
     .optional(),
@@ -73,11 +74,8 @@ export const requestRouter = router({
   submit: publicProcedure
     .input(submitRequestSchema)
     .mutation(async ({ ctx, input }) => {
-      const { contact, items, additionalInfo, curatedBags: _curatedBags } = input;
-      // curatedBags accepted for future persistence; data model TBD
+      const { contact, items, additionalInfo, curatedBags } = input;
 
-      // Resolve item type names → IDs (case-insensitive)
-      const requestedNames = items.map((i) => i.itemTypeName);
       const allItemTypes = await ctx.prisma.itemType.findMany({
         where: { isDeleted: false },
       });
@@ -85,6 +83,19 @@ export const requestRouter = router({
       const nameToId = new Map(
         allItemTypes.map((t) => [t.name.toLowerCase(), t.id])
       );
+
+      const curatedBagTypeId = nameToId.get("curated bag");
+      if (
+        curatedBags != null &&
+        curatedBags.length > 0 &&
+        curatedBagTypeId == null
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            'Curated bag requests require the "Curated bag" item type in the database. Run the database seed (e.g. npm run db:seed).',
+        });
+      }
 
       // Validate all names resolve to real item types
       const resolvedItems = items.map((item) => {
@@ -99,8 +110,19 @@ export const requestRouter = router({
           itemTypeId: id,
           size: item.size ?? null,
           gender: item.gender ?? null,
+          quantity: 1,
         };
       });
+
+      const curatedBagRows =
+        curatedBags != null && curatedBags.length > 0 && curatedBagTypeId != null
+          ? curatedBags.map((bag) => ({
+              itemTypeId: curatedBagTypeId,
+              size: bag.size,
+              gender: bag.gender ?? null,
+              quantity: bag.quantity,
+            }))
+          : [];
 
       const request = await ctx.prisma.request.create({
         data: {
@@ -113,7 +135,7 @@ export const requestRouter = router({
           },
           additionalInfo: additionalInfo || null,
           items: {
-            create: resolvedItems,
+            create: [...resolvedItems, ...curatedBagRows],
           },
         },
         include: {

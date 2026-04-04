@@ -27,6 +27,7 @@ const createEmptyCuratedBagEntry = (): CuratedBagEntry => ({
   id: generateId('curated'),
   size: null,
   quantity: 1,
+  gender: null,
 });
 
 // Initial form state
@@ -57,6 +58,7 @@ interface UseRequestFormReturn {
   removeCuratedBagRequest: (id: string) => void;
   updateCuratedBagSize: (id: string, size: CuratedBagSize | null) => void;
   updateCuratedBagQuantity: (id: string, quantity: number) => void;
+  updateCuratedBagGender: (id: string, gender: Gender | null) => void;
 
   // Clothing request methods
   addClothingRequest: () => void;
@@ -135,6 +137,15 @@ export function useRequestForm(): UseRequestFormReturn {
     }));
   }, []);
 
+  const updateCuratedBagGender = useCallback((id: string, gender: Gender | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      curatedBagRequests: prev.curatedBagRequests.map((entry) =>
+        entry.id === id ? { ...entry, gender } : entry
+      ),
+    }));
+  }, []);
+
   // Clothing request methods
   const addClothingRequest = useCallback(() => {
     setFormData((prev) => ({
@@ -209,6 +220,7 @@ export function useRequestForm(): UseRequestFormReturn {
     removeCuratedBagRequest,
     updateCuratedBagSize,
     updateCuratedBagQuantity,
+    updateCuratedBagGender,
     addClothingRequest,
     removeClothingRequest,
     updateClothingSize,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useRequestForm } from '@/hooks';
 import { trpc } from '@/lib/trpc';
 import { ContactInfoSection } from './ContactInfoSection';
@@ -11,7 +11,7 @@ import type { RequestFormData } from '@/types';
 
 /**
  * Transform the local form data into the shape the API expects.
- * curatedBags: only entries with a size selected; each has size + quantity.
+ * curatedBags: only entries with a size selected; each has size, quantity, optional gender.
  * items: clothing and gear (one API item per type per request).
  */
 function buildSubmitPayload(formData: RequestFormData) {
@@ -39,7 +39,11 @@ function buildSubmitPayload(formData: RequestFormData) {
 
   const curatedBags = formData.curatedBagRequests
     .filter((entry) => entry.size != null && entry.quantity >= 1)
-    .map((entry) => ({ size: entry.size!, quantity: entry.quantity }));
+    .map((entry) => ({
+      size: entry.size!,
+      quantity: entry.quantity,
+      ...(entry.gender != null ? { gender: entry.gender } : {}),
+    }));
 
   return {
     contact: {
@@ -67,6 +71,7 @@ export function RequestForm() {
     removeCuratedBagRequest,
     updateCuratedBagSize,
     updateCuratedBagQuantity,
+    updateCuratedBagGender,
     addClothingRequest,
     removeClothingRequest,
     updateClothingSize,
@@ -145,6 +150,7 @@ export function RequestForm() {
         curatedBagRequests={formData.curatedBagRequests}
         onSizeChange={updateCuratedBagSize}
         onQuantityChange={updateCuratedBagQuantity}
+        onGenderChange={updateCuratedBagGender}
         onAdd={addCuratedBagRequest}
         onRemove={removeCuratedBagRequest}
       />
