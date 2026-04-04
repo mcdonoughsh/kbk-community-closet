@@ -94,11 +94,11 @@ function parseClothingGroupKey(key: string): { size: string; gender: string } {
   };
 }
 
-/** Middle dot (~30px); parent row should use flex items-center for alignment */
+/** Middle dot (~20px); parent row should use flex items-center for alignment */
 function DotSeparator() {
   return (
     <span
-      className="shrink-0 select-none text-[30px] leading-none text-gray-400"
+      className="shrink-0 select-none text-[20px] leading-none text-gray-400"
       aria-hidden
     >
       ·
@@ -110,7 +110,7 @@ const ITEMS_SECTION_HEADING =
   "text-xs font-bold uppercase tracking-wide text-[var(--kbk-primary,#036bb6)]";
 
 function ItemsSectionHeading({ children }: { children: ReactNode }) {
-  return <p className={`${ITEMS_SECTION_HEADING} mb-1.5`}>{children}</p>;
+  return <p className={`${ITEMS_SECTION_HEADING} mb-1`}>{children}</p>;
 }
 
 function gearItemsWithNames(
@@ -148,14 +148,14 @@ function ItemsRequestedDisplay({
       {hasCurated && (
         <div>
           <ItemsSectionHeading>Curated bags</ItemsSectionHeading>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-0">
             {curated.map((c) => {
               const qty =
                 c.quantity > 1 || showCuratedQtyEach ? ` ×${c.quantity}` : "";
               return (
                 <p
                   key={c.id}
-                  className="flex flex-wrap items-center gap-x-1.5 text-sm leading-relaxed text-gray-700"
+                  className="flex flex-wrap items-center gap-x-1.5 text-sm leading-snug text-gray-700"
                 >
                   <span className={SIZE_TEXT_CLASS}>{c.size || "?"}</span>
                   {c.gender ? (
@@ -177,13 +177,13 @@ function ItemsRequestedDisplay({
       {hasClothing && (
         <div>
           <ItemsSectionHeading>Clothing</ItemsSectionHeading>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-0">
             {Object.entries(clothingGrouped).map(([key, { types, firstId }]) => {
               const { size, gender } = parseClothingGroupKey(key);
               return (
                 <p
                   key={firstId}
-                  className="flex flex-wrap items-center gap-x-1.5 text-sm leading-relaxed text-gray-700"
+                  className="flex flex-wrap items-center gap-x-1.5 text-sm leading-snug text-gray-700"
                 >
                   <span className={SIZE_TEXT_CLASS}>{size}</span>
                   <DotSeparator />
@@ -200,7 +200,7 @@ function ItemsRequestedDisplay({
       {hasGear && (
         <div>
           <ItemsSectionHeading>Gear</ItemsSectionHeading>
-          <p className="text-sm leading-relaxed text-gray-700">
+          <p className="text-sm leading-snug text-gray-700">
             {gearDisplay.map((g) => g.itemType.name).join(", ")}
           </p>
         </div>
@@ -419,12 +419,12 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
             {sorted.map((req) => (
               <tr key={req.id} className="hover:bg-gray-50 transition-colors">
                 {/* Name */}
-                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+                <td className="px-4 py-3 align-middle font-medium text-gray-900 whitespace-nowrap">
                   {req.contact.name || "—"}
                 </td>
 
                 {/* Contact: phone + email */}
-                <td className="px-4 py-3 text-gray-600 align-top">
+                <td className="px-4 py-3 align-middle text-gray-600">
                   <div className="flex flex-col gap-1 min-w-0 max-w-[16rem]">
                     <a
                       href={`tel:${req.contact.phone}`}
@@ -446,13 +446,13 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
                 </td>
 
                 {/* Items */}
-                <td className="px-4 py-3 text-gray-600 align-top min-w-0">
+                <td className="px-4 py-3 align-middle text-gray-600 min-w-0">
                   <div title={formatItems(req.items)}>
                     <ItemsRequestedDisplay items={req.items} />
                   </div>
                   {req.additionalInfo && (
                     <p
-                      className="text-xs text-gray-400 mt-1.5 line-clamp-2"
+                      className="text-xs text-gray-400 mt-1 line-clamp-2"
                       title={req.additionalInfo}
                     >
                       Note: {req.additionalInfo}
@@ -461,7 +461,7 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
                 </td>
 
                 {/* Status */}
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 align-middle">
                   <span
                     className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${statusColors[req.status]}`}
                   >
@@ -470,12 +470,12 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
                 </td>
 
                 {/* Date */}
-                <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
+                <td className="px-4 py-3 align-middle text-gray-500 whitespace-nowrap">
                   {new Date(req.createdAt).toLocaleDateString()}
                 </td>
 
                 {/* Actions */}
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 align-middle">
                   <div className="flex gap-2">
                     {req.status !== "FULFILLED" && (
                       <button
