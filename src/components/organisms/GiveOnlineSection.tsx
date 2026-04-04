@@ -14,7 +14,7 @@ export function GiveOnlineSection() {
           Give online
         </h2>
         <p className="mt-4 text-white/90 text-lg leading-relaxed text-pretty">
-          Prefer to give financially? We proudly partnered with Kennebunk Bible Church to handle operations and financial management. Use their secure giving
+          Prefer to give financially? We proudly partnered with Kennebunk Bible Church to handle operations and financial management. Please visit their secure giving
           page.
           <br />
           <br />
