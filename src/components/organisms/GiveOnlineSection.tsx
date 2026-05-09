@@ -1,4 +1,5 @@
-export const GIVING_FIRE_URL = "https://kennebunkchurch.givingfire.com/";
+/** Venmo profile for financial gifts (opens Venmo app or web). */
+export const KBK_VENMO_URL = "https://venmo.com/sammy_mills";
 
 export function GiveOnlineSection() {
   return (
@@ -14,23 +15,19 @@ export function GiveOnlineSection() {
           Give online
         </h2>
         <p className="mt-4 text-white/90 text-lg leading-relaxed text-pretty">
-          Prefer to give financially? We proudly partnered with Kennebunk Bible Church to handle operations and financial management. Please visit their secure giving
-          page.
-          <br />
-          <br />
-          <strong className="font-semibold text-white">
-            Under Fund, choose &ldquo;KBK Closet&rdquo;
-          </strong>{" "}
-          so your gift supports the community closet.
+          Prefer to give financially? You can support KBK Community Closet with a
+          gift through Venmo to co-founder Sammy Mills (
+          <strong className="font-semibold text-white">@sammy_mills</strong>
+          ). Thank you for helping neighbors with dignity.
         </p>
         <div className="mt-8">
           <a
-            href={GIVING_FIRE_URL}
+            href={KBK_VENMO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-base font-semibold text-[#025a9a] shadow-sm transition-colors hover:bg-white/90 touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#025a9a]"
           >
-            Give online
+            Give on Venmo
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"

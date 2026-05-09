@@ -120,13 +120,13 @@ export default function SupportPage() {
             >
               Learn how to donate
             </Link>{" "}
-            or reach out through our{" "}
-            <Link
-              href="/request"
+            or reach us at{" "}
+            <a
+              href="mailto:kbkcommunitycloset@gmail.com"
               className="font-semibold text-[#025a9a] underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-[#025a9a] focus:ring-offset-2 rounded"
             >
-              contact options
-            </Link>
+              kbkcommunitycloset@gmail.com
+            </a>
             .
           </p>
         </div>
