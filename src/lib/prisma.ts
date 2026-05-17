@@ -11,3 +11,10 @@ export const prisma =
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+/** Lightweight DB aliveness check — verifies the connection can run a query. */
+export async function pingDatabase(
+  db: Pick<PrismaClient, "$queryRaw"> = prisma
+): Promise<void> {
+  await db.$queryRaw`SELECT 1`;
+}

@@ -17,7 +17,9 @@ describe("App Router", () => {
 
     expect(result).toEqual({
       status: "ok",
+      database: "ok",
       message: "KBK Community Closet API is running",
     });
+    expect(mockCtx.prisma.$queryRaw).toHaveBeenCalledOnce();
   });
 });
