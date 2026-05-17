@@ -36,7 +36,7 @@ export const faqItems: FaqItem[] = [
     id: "items-accepted",
     question: "What items do you accept and provide?",
     answer:
-      "We primarily offer gently used children’s clothing. When available, we also provide maternity clothing and select baby items. Items are carefully reviewed to ensure they are clean, safe, and in good condition.",
+      "We primarily offer gently used children’s clothing. When available, we also provide maternity clothing and select baby items. We do not accept toys. Items are carefully reviewed to ensure they are clean, safe, and in good condition.",
   },
   {
     id: "swap-events",

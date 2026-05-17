@@ -92,6 +92,7 @@ export default function DonatePage() {
             role="list"
           >
             {[
+              "Toys",
               "Dirty or unwashed items",
               "Torn, stained, or damaged clothing",
               "Items with odors or mildew",
