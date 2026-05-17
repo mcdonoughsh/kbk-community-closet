@@ -2,32 +2,25 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import type { EventGalleryImage } from "@/data/events";
 
-const SWAP_2025_GALLERY_IMAGES = [
-  "FullSizeRender (1).jpeg",
-  "FullSizeRender (2).jpeg",
-  "FullSizeRender (3).jpeg",
-  "FullSizeRender (4).jpeg",
-  "FullSizeRender.jpeg",
-  "IMG_2040.JPG",
-  "IMG_4283.jpeg",
-  "IMG_4284.jpeg",
-  "IMG_4285.jpeg",
-  "IMG_4286.jpeg",
-  "IMG_4292.jpeg",
-  "IMG_4293.jpeg",
-  "IMG_4295.jpeg",
-  "IMG_4296.jpeg",
-  "IMG_4297.jpeg",
-  "IMG_4298.jpeg",
-  "IMG_4299.jpeg",
-] as const;
+type EventGalleryProps = {
+  images: readonly EventGalleryImage[];
+  basePath: string;
+  headingId: string;
+  eventLabel: string;
+};
 
-function getImageSrc(filename: string) {
-  return `/images/swap-2025/${encodeURIComponent(filename)}`;
+function getImageSrc(basePath: string, filename: string) {
+  return `${basePath}/${encodeURIComponent(filename)}`;
 }
 
-export function EventGallery() {
+export function EventGallery({
+  images,
+  basePath,
+  headingId,
+  eventLabel,
+}: EventGalleryProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
@@ -57,24 +50,28 @@ export function EventGallery() {
 
   const openImage = (index: number) => () => setOpenIndex(index);
 
+  if (images.length === 0) return null;
+
+  const openImageData = openIndex !== null ? images[openIndex] : null;
+
   return (
     <>
       <ul
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 list-none p-0 m-0"
+        className="grid grid-cols-2 gap-3 list-none p-0 m-0 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4"
         role="list"
-        aria-labelledby="swap-2025-gallery-heading"
+        aria-labelledby={headingId}
       >
-        {SWAP_2025_GALLERY_IMAGES.map((filename, index) => (
+        {images.map(({ filename, alt }, index) => (
           <li key={filename} className="min-w-0">
             <button
               type="button"
               onClick={openImage(index)}
-              className="relative aspect-[4/3] w-full rounded-lg overflow-hidden bg-[#e6f4ff] ring-1 ring-[#025a9a]/10 block text-left touch-action-manipulation hover:ring-[#025a9a]/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#036bb6] focus-visible:ring-offset-2 transition-[box-shadow]"
-              aria-label={`View photo ${index + 1} from swap 2025 event full size`}
+              className="relative block aspect-[4/3] w-full overflow-hidden rounded-lg bg-[var(--kbk-background)] text-left ring-1 ring-[var(--kbk-primary)]/10 touch-manipulation transition-[box-shadow] motion-reduce:transition-none hover:ring-[var(--kbk-primary)]/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-border-focus)] focus-visible:ring-offset-2"
+              aria-label={`View photo ${index + 1} from ${eventLabel} full size`}
             >
               <Image
-                src={getImageSrc(filename)}
-                alt={`Photo ${index + 1} from swap 2025 event`}
+                src={getImageSrc(basePath, filename)}
+                alt={alt}
                 fill
                 className="object-cover"
                 loading="lazy"
@@ -85,26 +82,28 @@ export function EventGallery() {
         ))}
       </ul>
 
-      {openIndex !== null && (
+      {openImageData !== null && (
         <div
           role="dialog"
           aria-modal="true"
           aria-label="View full size photo"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 overscroll-contain"
+          className="fixed inset-0 z-50 flex items-center justify-center overscroll-contain bg-black/80 p-4"
           onClick={close}
           onKeyDown={(e) => {
             if (e.key === "Escape") close();
           }}
         >
           <div
-            className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh] w-full h-full"
+            className="relative flex h-full max-h-[90vh] w-full max-w-[90vw] items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={getImageSrc(SWAP_2025_GALLERY_IMAGES[openIndex])}
-              alt={`Photo ${openIndex + 1} from swap 2025 event`}
-              className="max-h-[90vh] max-w-[90vw] w-auto h-auto object-contain"
+              src={getImageSrc(basePath, openImageData.filename)}
+              alt={openImageData.alt}
+              width={1024}
+              height={768}
+              className="max-h-[90vh] max-w-[90vw] h-auto w-auto object-contain"
               draggable={false}
               style={{ transformOrigin: "center" }}
             />
@@ -112,11 +111,11 @@ export function EventGallery() {
               ref={closeButtonRef}
               type="button"
               onClick={close}
-              className="absolute top-4 right-4 p-2 rounded-full bg-white/90 text-gray-800 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black touch-action-manipulation"
+              className="absolute top-4 right-4 touch-manipulation rounded-full bg-white/90 p-2 text-gray-800 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               aria-label="Close"
             >
               <svg
-                className="w-6 h-6"
+                className="h-6 w-6"
                 stroke="currentColor"
                 fill="none"
                 viewBox="0 0 24 24"

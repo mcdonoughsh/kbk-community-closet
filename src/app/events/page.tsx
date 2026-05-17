@@ -1,168 +1,184 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { EventGallery } from "./EventGallery";
-
-const FACEBOOK_SPRING_EVENT_URL =
-  "https://www.facebook.com/events/1473613661163090";
+import { EventFliersRow } from "./EventFliersRow";
+import { UpcomingEventTeaser } from "./UpcomingEventTeaser";
+import { SpringEventRecap } from "./SpringEventRecap";
+import {
+  SPRING_2026_GALLERY,
+  SWAP_2025_GALLERY,
+  SPRING_2026_EVENT_DATE,
+  SPRING_2026_EVENT_TITLE,
+  formatEventMonthYear,
+  getSpring2026GallerySrc,
+  SPRING_2026_GALLERY_BASE,
+  SWAP_2025_GALLERY_BASE,
+} from "@/data/events";
 
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "Upcoming events and past events at KBK Community Closet. Drop-off windows, distribution days, and community gatherings.",
+    "KBK Community Closet pop-up events—sustainability, neighbors helping neighbors, and community care. Fall pop-up coming soon.",
 };
+
+const springEventLabel = formatEventMonthYear(SPRING_2026_EVENT_DATE);
 
 export default function EventsPage() {
   return (
-    <div className="min-h-screen bg-[#e6f4ff] font-sans">
-      {/* Hero */}
+    <div className="min-h-screen bg-[var(--kbk-background)] font-sans">
+      <UpcomingEventTeaser />
       <section
         id="main-content"
-        className="relative overflow-hidden px-10 py-10 sm:px-6 sm:py-16 lg:px-8"
+        className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-16 lg:px-8"
         aria-labelledby="events-heading"
       >
         <div className="mx-auto max-w-4xl text-center">
           <h1
             id="events-heading"
-            className="text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-tight text-[#025a9a] leading-[1.1] text-balance"
+            className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.1] tracking-tight text-balance text-[var(--kbk-primary-hover)]"
           >
             Events
           </h1>
-          <p className="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-[#171717]/80 leading-relaxed">
-            Upcoming events and activities at KBK Community Closet. Check back
-            for drop-off windows, distribution days, and community gatherings.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-[var(--kbk-text)]/80 sm:text-xl">
+            Our pop-ups are where sustainability and community care go hand in
+            hand neighbors donating, volunteering, and supporting one another
+            so kids’ clothing, shoes, toys, books, and baby essentials find new
+            homes instead of landfills.
           </p>
         </div>
       </section>
 
-      {/* Upcoming events — placeholder for Mothers Day */}
       <section
-        className="px-4 pb-16 pt-0 sm:px-6 lg:px-8"
-        aria-labelledby="upcoming-heading"
+        className="px-4 pb-12 sm:px-6 lg:px-8"
+        aria-labelledby="recent-event-heading"
       >
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-5xl">
+          <p className="text-xs font-semibold uppercase tracking-wide text-[var(--kbk-primary)]">
+            Most recent
+          </p>
           <h2
-            id="upcoming-heading"
-            className="text-2xl sm:text-3xl font-semibold text-[#025a9a] tracking-tight text-balance"
+            id="recent-event-heading"
+            className="mt-2 text-2xl font-semibold tracking-tight text-balance text-[var(--kbk-primary-hover)] sm:text-3xl"
           >
-            Upcoming events
+            {SPRING_2026_EVENT_TITLE}
           </h2>
-          <div className="mt-6 bg-white/95 p-5 sm:p-6">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-              <div className="min-w-0 space-y-1.5 border-l-4 border-[var(--kbk-primary)] pl-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--kbk-primary)]">
-                  Mother&apos;s Day pop-up
-                </p>
-                <p className="text-base text-[var(--kbk-text-muted)] leading-relaxed text-pretty">
-                  Let us know you&apos;re coming.
-                </p>
-              </div>
-              <a
-                href={FACEBOOK_SPRING_EVENT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex w-full shrink-0 items-center justify-center gap-2 px-6 py-3.5 text-base font-semibold text-white rounded-xl bg-[var(--kbk-primary)] hover:bg-[var(--kbk-primary-hover)] touch-manipulation transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-border-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:w-auto sm:self-center sm:py-3"
-              >
-                RSVP on Facebook
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5 shrink-0"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.25 5.5a.75.75 0 01.75-.75h10.5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0V6.562l-8.72 8.72a.75.75 0 11-1.06-1.06l8.72-8.72H6.75a.75.75 0 010-1.5h4.5z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="sr-only">(opens in a new tab)</span>
-              </a>
-            </div>
-          </div>
-          <article
-            className="mt-6 overflow-hidden bg-white sm:mt-8 lg:relative lg:-left-[80px] lg:right-[70px] lg:w-[116%]"
-            aria-labelledby="swap-2025-heading"
-          >
-            <h3
-              id="swap-2025-heading"
-              className="sr-only"
-            >
-              Spring Pop-up 2026
-            </h3>
-            <div>
-              <Image
-                src="/images/popup-spring-2026/event-promo.png"
-                alt="KBC Children's Community Closet promo: Needs your help! In one week we provided clothing for over 40 families. Your $25 donation helps buy bins to keep donated items organized and clean."
-                width={612}
-                height={816}
-                className="w-full h-full"
-                loading="lazy"
-                sizes="(max-width: 768px) 100vw, 896px"
-              />
-            </div>
-          </article>
-
-        </div>
-      </section>
-
-      {/* Past events */}
-      <section
-        className="px-4 py-16 sm:px-6 lg:px-8 bg-white/50"
-        aria-labelledby="past-heading"
-      >
-        <div className="mx-auto max-w-4xl">
-          <h2
-            id="past-heading"
-            className="text-2xl sm:text-3xl font-semibold text-[#025a9a] tracking-tight text-balance"
-          >
-            Past events
-          </h2>
-          <p className="mt-2 text-[#171717]/80 text-lg">
-            A look back at recent swaps and community closet events.
+          <p className="mt-1 text-base text-[var(--kbk-text-muted)]">
+            {springEventLabel}
           </p>
 
-          <article
-            className="overflow-hidden bg-white"
-            aria-labelledby="swap-2025-heading"
-          >
-            <h3
-              id="swap-2025-heading"
-              className="sr-only"
-            >
-              Swap 2025
-            </h3>
-            <div>
+          <article className="mt-8 overflow-hidden bg-white shadow-sm ring-1 ring-[var(--kbk-primary)]/10">
+            <div className="relative aspect-[4/3] w-full sm:aspect-[16/9]">
               <Image
-                src="/images/swap-2025/swap-promo.png"
-                alt="KBC Children's Community Closet promo: Needs your help! In one week we provided clothing for over 40 families. Your $25 donation helps buy bins to keep donated items organized and clean."
-                width={612}
-                height={816}
-                className="w-full h-full"
-                loading="lazy"
-                sizes="(max-width: 768px) 100vw, 896px"
+                src={getSpring2026GallerySrc("hero-room-wide.jpeg")}
+                alt="Families browsing tables of children's clothing at the KBK Kids Community Closet spring event"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1024px) 100vw, 1024px"
               />
             </div>
-            <div className="p-5 sm:p-6 border-t border-[#025a9a]/10">
-              <p className="text-[#171717]/80 text-base leading-relaxed">
-                Our last swap event brought the community together to collect and
-                distribute clothing and essentials. Over 40 families received
-                clothing in one week. Thank you to everyone who donated and
-                volunteered.
-              </p>
+            <div className="p-5 sm:p-8">
+              <SpringEventRecap />
             </div>
           </article>
 
           <h3
-            id="swap-2025-gallery-heading"
-            className="text-xl font-semibold text-[#025a9a] mt-10 mb-4 text-balance"
+            id="spring-2026-gallery-heading"
+            className="mt-10 mb-4 text-xl font-semibold text-balance text-[var(--kbk-primary-hover)]"
           >
-            Gallery
+            Event photos
           </h3>
-          <EventGallery />
+          <EventGallery
+            images={SPRING_2026_GALLERY}
+            basePath={SPRING_2026_GALLERY_BASE}
+            headingId="spring-2026-gallery-heading"
+            eventLabel="Spring Pop-up 2026"
+          />
+        </div>
+      </section>
 
-          <p className="mt-6 text-[#171717]/70 text-sm">
-            Contact us if you’d like to share your event photos.
+      <section
+        className="border-y border-[var(--kbk-primary)]/10 bg-white/60 px-4 py-12 sm:px-6 sm:py-16 lg:px-8"
+        aria-labelledby="fliers-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <h2
+            id="fliers-heading"
+            className="text-2xl font-semibold tracking-tight text-balance text-[var(--kbk-primary-hover)] sm:text-3xl"
+          >
+            Event fliers
+          </h2>
+          <div className="mt-8">
+            <EventFliersRow />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="px-4 py-16 sm:px-6 lg:px-8"
+        aria-labelledby="past-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <h2
+            id="past-heading"
+            className="text-2xl font-semibold tracking-tight text-balance text-[var(--kbk-primary-hover)] sm:text-3xl"
+          >
+            Past events
+          </h2>
+          <p className="mt-2 text-lg text-pretty text-[var(--kbk-text)]/80">
+            Earlier gatherings where neighbors shared resources and kept quality items in circulation.
+          </p>
+
+          <article
+            className="mt-8 bg-white p-5 shadow-sm ring-1 ring-[var(--kbk-primary)]/10 sm:p-8"
+            aria-labelledby="swap-2025-heading"
+          >
+            <h3
+              id="swap-2025-heading"
+              className="text-xl font-semibold text-[var(--kbk-primary-hover)]"
+            >
+              Community Swap 2025
+            </h3>
+            <p className="mt-3 text-base leading-relaxed text-pretty text-[var(--kbk-text)]/80">
+              Our swap brought neighbors together to collect and distribute
+              clothing and essentials keeping items in use and supporting local
+              families. Thank you to everyone who donated and volunteered.
+            </p>
+          </article>
+
+          <h3
+            id="swap-2025-gallery-heading"
+            className="mt-10 mb-4 text-xl font-semibold text-balance text-[var(--kbk-primary-hover)]"
+          >
+            Swap 2025 photos
+          </h3>
+          <EventGallery
+            images={SWAP_2025_GALLERY}
+            basePath={SWAP_2025_GALLERY_BASE}
+            headingId="swap-2025-gallery-heading"
+            eventLabel="Community Swap 2025"
+          />
+
+          <p className="mt-8 text-sm text-[var(--kbk-text-muted)]">
+            Contact us if you&apos;d like to share your event photos.
+          </p>
+        </div>
+      </section>
+
+      <section
+        className="px-4 pb-16 sm:px-6 lg:px-8"
+        aria-labelledby="stay-updated-heading"
+      >
+        <div className="mx-auto max-w-3xl rounded-xl bg-white/95 p-6 text-center shadow-sm ring-1 ring-[var(--kbk-primary)]/10 sm:p-8">
+          <h2
+            id="stay-updated-heading"
+            className="text-xl font-semibold text-balance text-[var(--kbk-primary-hover)]"
+          >
+            Stay updated
+          </h2>
+          <p className="mt-3 text-base leading-relaxed text-pretty text-[var(--kbk-text)]/80">
+            We are working on the fall pop up, and will post dates as soon as they are confirmed! Another chance to share, swap, and support one
+            another while keeping great items out of landfills.
           </p>
         </div>
       </section>
