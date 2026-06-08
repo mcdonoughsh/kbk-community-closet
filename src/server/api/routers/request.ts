@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { scheduleNewRequestSlackNotification } from "@/lib/slack-notify";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 
 /**
@@ -143,6 +144,8 @@ export const requestRouter = router({
           items: { include: { itemType: true } },
         },
       });
+
+      scheduleNewRequestSlackNotification(request);
 
       return request;
     }),
