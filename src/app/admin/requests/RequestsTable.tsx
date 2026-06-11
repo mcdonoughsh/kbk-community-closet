@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useMemo, useCallback, type ReactNode } from "react";
+import {
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+  useRef,
+  type ReactNode,
+} from "react";
 import { trpc } from "@/lib/trpc";
 import type { RequestStatus, Role, ItemCategory } from "@prisma/client";
 
@@ -9,6 +16,7 @@ import type { RequestStatus, Role, ItemCategory } from "@prisma/client";
 type RequestWithRelations = {
   id: string;
   status: RequestStatus;
+  assignee: string | null;
   additionalInfo: string | null;
   createdAt: string | Date;
   contact: {
@@ -270,6 +278,60 @@ function getSortValue(req: RequestWithRelations, field: SortField): string {
 
 // ─── Sort indicator ─────────────────────────────────────
 
+function AssigneeCell({
+  requestId,
+  assignee,
+}: {
+  requestId: string;
+  assignee: string | null;
+}) {
+  const utils = trpc.useUtils();
+  const serverValue = assignee ?? "";
+  const [value, setValue] = useState(serverValue);
+  const lastCommitted = useRef(serverValue.trim());
+
+  useEffect(() => {
+    const next = assignee ?? "";
+    setValue(next);
+    lastCommitted.current = next.trim();
+  }, [assignee]);
+
+  const updateAssignee = trpc.request.updateAssignee.useMutation({
+    onSuccess: () => void utils.request.list.invalidate(),
+  });
+
+  const commit = useCallback(() => {
+    const trimmed = value.trim();
+    if (trimmed === lastCommitted.current) return;
+    updateAssignee.mutate(
+      { requestId, assignee: trimmed === "" ? null : trimmed },
+      {
+        onSuccess: () => {
+          lastCommitted.current = trimmed;
+        },
+        onError: () => {
+          setValue(serverValue);
+          lastCommitted.current = serverValue.trim();
+        },
+      }
+    );
+  }, [requestId, serverValue, updateAssignee, value]);
+
+  return (
+    <input
+      type="text"
+      maxLength={100}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onBlur={commit}
+      disabled={updateAssignee.isPending}
+      placeholder="—"
+      aria-label="Assignee"
+      className="w-full min-w-[8rem] max-w-[14rem] rounded border border-gray-200 px-2 py-1.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[var(--kbk-primary,#036bb6)] focus:outline-none focus:ring-1 focus:ring-[var(--kbk-primary,#036bb6)] disabled:opacity-50"
+    />
+  );
+}
+
 function SortIcon({
   active,
   direction,
@@ -368,6 +430,7 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
   }[] = [
     { label: "Name", field: "name" },
     { label: "Contact", field: "contact" },
+    { label: "Assignee", field: null, className: "min-w-[9rem]" },
     {
       label: "Items Requested",
       field: "items",
@@ -443,6 +506,11 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
                       <span className="text-gray-300 text-[13px]">—</span>
                     )}
                   </div>
+                </td>
+
+                {/* Assignee */}
+                <td className="px-4 py-3 align-middle">
+                  <AssigneeCell requestId={req.id} assignee={req.assignee} />
                 </td>
 
                 {/* Items */}

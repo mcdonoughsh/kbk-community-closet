@@ -71,6 +71,8 @@ model Request {
   contactId      String
   contact        Contact       @relation(fields: [contactId], references: [id])
   status         RequestStatus @default(NEW)
+  /** Free-text assignee label (max 100 chars); distinct from assignedTo (volunteer profile). */
+  assignee       String?       @db.VarChar(100)
   additionalInfo String?
   assignedToId   String?
   assignedTo     UserProfile?  @relation("AssignedTo", fields: [assignedToId], references: [id])

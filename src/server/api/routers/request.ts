@@ -49,12 +49,24 @@ const updateStatusSchema = z.object({
   status: z.enum(["NEW", "ASSIGNED", "FULFILLED"]),
 });
 
+const updateAssigneeSchema = z.object({
+  requestId: z.string().uuid(),
+  assignee: z
+    .union([z.string().max(100), z.literal(""), z.null()])
+    .transform((v) => {
+      if (v === null || v === "") return null;
+      const t = v.trim();
+      return t.length === 0 ? null : t;
+    }),
+});
+
 /**
  * Request router
  * - itemTypes: public (reference data for forms)
  * - submit: public (anonymous users can submit requests)
  * - list: protected (volunteers and admins can view requests)
  * - updateStatus: protected (volunteers can mark fulfilled, admins can do anything)
+ * - updateAssignee: protected (free-text assignee, max 100 chars)
  */
 export const requestRouter = router({
   /**
@@ -198,6 +210,20 @@ export const requestRouter = router({
       const request = await ctx.prisma.request.update({
         where: { id: input.requestId },
         data: { status: input.status },
+      });
+
+      return request;
+    }),
+
+  /**
+   * Update free-text assignee (protected)
+   */
+  updateAssignee: protectedProcedure
+    .input(updateAssigneeSchema)
+    .mutation(async ({ ctx, input }) => {
+      const request = await ctx.prisma.request.update({
+        where: { id: input.requestId },
+        data: { assignee: input.assignee },
       });
 
       return request;
