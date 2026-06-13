@@ -20,7 +20,6 @@ enum Role {
 
 enum RequestStatus {
   NEW
-  ASSIGNED
   FULFILLED
   CONTACTED
   UNCLAIMED

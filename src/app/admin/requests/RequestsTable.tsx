@@ -65,7 +65,6 @@ type SortDirection = "asc" | "desc";
 
 const statusColors: Record<RequestStatus, string> = {
   NEW: "bg-blue-100 text-blue-800",
-  ASSIGNED: "bg-yellow-100 text-yellow-800",
   FULFILLED: "bg-green-100 text-green-800",
   CONTACTED: "bg-purple-100 text-purple-800",
   UNCLAIMED: "bg-orange-100 text-orange-800",

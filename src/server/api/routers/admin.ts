@@ -42,9 +42,9 @@ export const adminRouter = router({
         where: { id: input.requestId },
         data: {
           assignedToId: input.assignedToId,
-          status: input.assignedToId
-            ? RequestStatus.ASSIGNED
-            : RequestStatus.NEW,
+          ...(input.assignedToId == null
+            ? { status: RequestStatus.NEW }
+            : {}),
         },
       });
 

@@ -7,7 +7,6 @@ export function getRequestStatusesSelectableInAdmin(): RequestStatus[] {
 
 export const REQUEST_STATUS_LABEL: Record<RequestStatus, string> = {
   [RequestStatus.NEW]: "New",
-  [RequestStatus.ASSIGNED]: "Assigned",
   [RequestStatus.FULFILLED]: "Fulfilled",
   [RequestStatus.CONTACTED]: "Contacted",
   [RequestStatus.UNCLAIMED]: "Unclaimed",
