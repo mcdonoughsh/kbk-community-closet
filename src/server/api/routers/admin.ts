@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RequestStatus } from "@prisma/client";
 import { router, adminProcedure, protectedProcedure } from "../trpc";
 
 /**
@@ -41,7 +42,9 @@ export const adminRouter = router({
         where: { id: input.requestId },
         data: {
           assignedToId: input.assignedToId,
-          status: input.assignedToId ? "ASSIGNED" : "NEW",
+          status: input.assignedToId
+            ? RequestStatus.ASSIGNED
+            : RequestStatus.NEW,
         },
       });
 

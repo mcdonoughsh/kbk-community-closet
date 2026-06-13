@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { RequestStatus } from "@prisma/client";
 import { scheduleNewRequestSlackNotification } from "@/lib/slack-notify";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 
@@ -46,7 +47,7 @@ const submitRequestSchema = z.object({
  */
 const updateStatusSchema = z.object({
   requestId: z.string().uuid(),
-  status: z.enum(["NEW", "ASSIGNED", "FULFILLED"]),
+  status: z.nativeEnum(RequestStatus),
 });
 
 const updateAssigneeSchema = z.object({
@@ -65,7 +66,7 @@ const updateAssigneeSchema = z.object({
  * - itemTypes: public (reference data for forms)
  * - submit: public (anonymous users can submit requests)
  * - list: protected (volunteers and admins can view requests)
- * - updateStatus: protected (volunteers can mark fulfilled, admins can do anything)
+ * - updateStatus: protected (volunteers and admins can set status per Prisma enum)
  * - updateAssignee: protected (free-text assignee, max 100 chars)
  */
 export const requestRouter = router({

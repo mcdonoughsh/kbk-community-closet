@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 /**
  * Server component — checks for a valid Supabase session.
  * All data fetching happens client-side through the tRPC API.
+ * Request status is edited from a dropdown in `RequestsTable` (saves on change).
  */
 export default async function AdminRequestsRoute() {
   const supabase = await createClient();

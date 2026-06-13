@@ -10,6 +10,10 @@ import {
 } from "react";
 import { trpc } from "@/lib/trpc";
 import type { RequestStatus, Role, ItemCategory } from "@prisma/client";
+import {
+  getRequestStatusesSelectableInAdmin,
+  REQUEST_STATUS_LABEL,
+} from "@/lib/request-status";
 
 // ─── Types ──────────────────────────────────────────────
 
@@ -63,6 +67,9 @@ const statusColors: Record<RequestStatus, string> = {
   NEW: "bg-blue-100 text-blue-800",
   ASSIGNED: "bg-yellow-100 text-yellow-800",
   FULFILLED: "bg-green-100 text-green-800",
+  CONTACTED: "bg-purple-100 text-purple-800",
+  UNCLAIMED: "bg-orange-100 text-orange-800",
+  REDISTRIBUTED: "bg-teal-100 text-teal-800",
 };
 
 /** Size labels in Items requested — primary blue, no chip chrome */
@@ -100,6 +107,67 @@ function parseClothingGroupKey(key: string): { size: string; gender: string } {
     size: key.slice(0, i),
     gender: key.slice(i + SIZE_GENDER_SEP.length),
   };
+}
+
+function StatusSelectCell({
+  requestId,
+  status,
+  updateStatus,
+}: {
+  requestId: string;
+  status: RequestStatus;
+  updateStatus: ReturnType<typeof trpc.request.updateStatus.useMutation>;
+}) {
+  const [localStatus, setLocalStatus] = useState(status);
+
+  useEffect(() => {
+    setLocalStatus(status);
+  }, [status]);
+
+  const selectable = useMemo(() => getRequestStatusesSelectableInAdmin(), []);
+  const options = useMemo(() => {
+    if (selectable.includes(status)) {
+      return selectable;
+    }
+    return [status, ...selectable];
+  }, [selectable, status]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const next = e.target.value as RequestStatus;
+    if (next === localStatus) return;
+    setLocalStatus(next);
+    updateStatus.mutate(
+      { requestId, status: next },
+      {
+        onError: () => {
+          setLocalStatus(status);
+        },
+      }
+    );
+  };
+
+  const rowPending =
+    updateStatus.isPending &&
+    updateStatus.variables?.requestId === requestId;
+
+  const colorClass =
+    statusColors[localStatus] ?? "bg-gray-100 text-gray-800";
+
+  return (
+    <select
+      value={localStatus}
+      onChange={handleChange}
+      disabled={rowPending}
+      aria-label="Request status"
+      className={`max-w-[11rem] rounded-full border-0 px-2 py-1 text-xs font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--kbk-primary,#036bb6)] focus:ring-offset-1 disabled:opacity-50 ${colorClass}`}
+    >
+      {options.map((s) => (
+        <option key={s} value={s}>
+          {REQUEST_STATUS_LABEL[s]}
+        </option>
+      ))}
+    </select>
+  );
 }
 
 /** Middle dot (~20px); parent row should use flex items-center for alignment */
@@ -409,13 +477,6 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
 
   // ─── Handlers ───────────────────────────────────────────
 
-  const handleStatusChange = (
-    requestId: string,
-    newStatus: RequestStatus
-  ) => {
-    updateStatus.mutate({ requestId, status: newStatus });
-  };
-
   const handleDelete = (requestId: string) => {
     if (!confirm("Are you sure you want to delete this request?")) return;
     deleteRequest.mutate({ requestId });
@@ -530,11 +591,11 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
 
                 {/* Status */}
                 <td className="px-4 py-3 align-middle">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${statusColors[req.status]}`}
-                  >
-                    {req.status}
-                  </span>
+                  <StatusSelectCell
+                    requestId={req.id}
+                    status={req.status}
+                    updateStatus={updateStatus}
+                  />
                 </td>
 
                 {/* Date */}
@@ -545,17 +606,6 @@ export function RequestsTable({ requests, userRole }: RequestsTableProps) {
                 {/* Actions */}
                 <td className="px-4 py-3 align-middle">
                   <div className="flex gap-2">
-                    {req.status !== "FULFILLED" && (
-                      <button
-                        onClick={() =>
-                          handleStatusChange(req.id, "FULFILLED")
-                        }
-                        disabled={updateStatus.isPending}
-                        className="text-xs px-2 py-1 rounded border border-green-300 text-green-700 hover:bg-green-50 transition-colors disabled:opacity-50"
-                      >
-                        Fulfill
-                      </button>
-                    )}
                     {userRole === "SUPER_ADMIN" && (
                       <button
                         onClick={() => handleDelete(req.id)}

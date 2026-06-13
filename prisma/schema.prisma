@@ -22,6 +22,9 @@ enum RequestStatus {
   NEW
   ASSIGNED
   FULFILLED
+  CONTACTED
+  UNCLAIMED
+  REDISTRIBUTED
 }
 
 enum ItemCategory {
