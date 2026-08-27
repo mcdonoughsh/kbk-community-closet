@@ -20,6 +20,7 @@ const createEmptyClothingRequest = (): ClothingRequest => ({
   size: null,
   gender: null,
   clothingTypes: [],
+  shoeSize: '',
 });
 
 // Initial empty curated bag entry
@@ -66,6 +67,7 @@ interface UseRequestFormReturn {
   updateClothingSize: (id: string, size: ClothingSize | null) => void;
   updateClothingGender: (id: string, gender: Gender | null) => void;
   updateClothingTypes: (id: string, types: ClothingType[]) => void;
+  updateClothingShoeSize: (id: string, shoeSize: string) => void;
   
   // Gear request methods
   updateGearTypes: (types: GearType[]) => void;
@@ -182,8 +184,19 @@ export function useRequestForm(): UseRequestFormReturn {
   const updateClothingTypes = useCallback((id: string, types: ClothingType[]) => {
     setFormData((prev) => ({
       ...prev,
+      clothingRequests: prev.clothingRequests.map((req) => {
+        if (req.id !== id) return req;
+        const shoeSize = types.includes('Shoes') ? req.shoeSize : '';
+        return { ...req, clothingTypes: types, shoeSize };
+      }),
+    }));
+  }, []);
+
+  const updateClothingShoeSize = useCallback((id: string, shoeSize: string) => {
+    setFormData((prev) => ({
+      ...prev,
       clothingRequests: prev.clothingRequests.map((req) =>
-        req.id === id ? { ...req, clothingTypes: types } : req
+        req.id === id ? { ...req, shoeSize } : req
       ),
     }));
   }, []);
@@ -226,6 +239,7 @@ export function useRequestForm(): UseRequestFormReturn {
     updateClothingSize,
     updateClothingGender,
     updateClothingTypes,
+    updateClothingShoeSize,
     updateGearTypes,
     updateAdditionalInfo,
     resetForm,

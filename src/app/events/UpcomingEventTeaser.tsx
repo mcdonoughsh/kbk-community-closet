@@ -17,7 +17,7 @@ export function UpcomingEventTeaser() {
           </h2>
         </div>
         <p className="shrink-0 text-center text-base font-semibold tabular-nums text-[#025a9a] sm:text-right">
-          Dates TBD
+          November 13 & 14, 2026
         </p>
       </div>
     </aside>

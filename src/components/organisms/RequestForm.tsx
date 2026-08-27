@@ -25,9 +25,11 @@ function buildSubmitPayload(formData: RequestFormData) {
   // Clothing: one API item per clothing-type per size/gender group
   for (const req of formData.clothingRequests) {
     for (const clothingType of req.clothingTypes) {
+      const isShoes = clothingType === "Shoes";
+      const shoeSize = req.shoeSize.trim();
       items.push({
         itemTypeName: clothingType,
-        size: req.size,
+        size: isShoes ? (shoeSize || null) : req.size,
         gender: req.gender,
       });
     }
@@ -82,6 +84,7 @@ export function RequestForm() {
     updateClothingSize,
     updateClothingGender,
     updateClothingTypes,
+    updateClothingShoeSize,
     updateGearTypes,
     updateAdditionalInfo,
     resetForm,
@@ -167,6 +170,7 @@ export function RequestForm() {
           onSizeChange={updateClothingSize}
           onGenderChange={updateClothingGender}
           onClothingTypesChange={updateClothingTypes}
+          onShoeSizeChange={updateClothingShoeSize}
           onRemove={removeClothingRequest}
           onAdd={addClothingRequest}
         />

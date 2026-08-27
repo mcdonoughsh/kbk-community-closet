@@ -1,6 +1,6 @@
 'use client';
 
-import { ChipGroup, IconChipGroup } from '@/components/molecules';
+import { ChipGroup, FormField, IconChipGroup } from '@/components/molecules';
 import type { ClothingRequest, ClothingSize, Gender, ClothingType, ChipOption } from '@/types';
 
 // Size options
@@ -57,6 +57,7 @@ interface ClothingRequestSectionProps {
   onSizeChange: (id: string, size: ClothingSize | null) => void;
   onGenderChange: (id: string, gender: Gender | null) => void;
   onClothingTypesChange: (id: string, types: ClothingType[]) => void;
+  onShoeSizeChange: (id: string, shoeSize: string) => void;
   onRemove: (id: string) => void;
   onAdd: () => void;
 }
@@ -69,6 +70,7 @@ export function ClothingRequestSection({
   onSizeChange,
   onGenderChange,
   onClothingTypesChange,
+  onShoeSizeChange,
   onRemove,
   onAdd,
 }: ClothingRequestSectionProps) {
@@ -120,6 +122,17 @@ export function ClothingRequestSection({
                 onChange={(types) => onClothingTypesChange(request.id, types)}
                 mode="multiple"
               />
+              {request.clothingTypes.includes('Shoes') ? (
+                <FormField
+                  label="Shoe size"
+                  name={`shoe-size-${request.id}`}
+                  type="text"
+                  placeholder="e.g. 5C, 8 toddler, 1 youth"
+                  value={request.shoeSize}
+                  onChange={(value) => onShoeSizeChange(request.id, value)}
+                  helperText="Kids’ shoe sizes often differ from clothing size—enter the size that fits."
+                />
+              ) : null}
             </div>
           </div>
         ))}

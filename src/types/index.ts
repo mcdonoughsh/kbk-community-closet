@@ -18,6 +18,8 @@ export interface ClothingRequest {
   size: ClothingSize | null;
   gender: Gender | null;
   clothingTypes: ClothingType[];
+  /** Free-text shoe size; used when Shoes is among clothingTypes */
+  shoeSize: string;
 }
 
 // Gear request section
