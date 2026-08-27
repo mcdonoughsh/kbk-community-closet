@@ -3,3 +3,4 @@ export { ClothingRequestSection } from './ClothingRequestSection';
 export { CuratedBagSection } from './CuratedBagSection';
 export { GearRequestSection } from './GearRequestSection';
 export { RequestForm } from './RequestForm';
+export { RequestPickupSection } from './RequestPickupSection';

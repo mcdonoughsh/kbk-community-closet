@@ -40,7 +40,8 @@ function validate(state: FormState): FieldErrors {
     errors.numberOfBags = "Enter 1–10 bags.";
   }
   if (!state.name.trim()) errors.name = "Enter your name.";
-  if (!state.phone.trim()) errors.phone = "Enter a phone number so we can reach you.";
+  if (!state.phone.trim())
+    errors.phone = "Enter a phone number so we can reach you.";
   return errors;
 }
 
@@ -50,22 +51,30 @@ export function CuratedBagRequestForm() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const firstErrorId = ["size", "numberOfBags", "name", "phone"].find((k) => errors[k as keyof FormState]);
+  const firstErrorId = ["size", "numberOfBags", "name", "phone"].find(
+    (k) => errors[k as keyof FormState],
+  );
   useEffect(() => {
     if (!firstErrorId) return;
-    const id = firstErrorId === "numberOfBags" ? "curated-bag-count" : `curated-bag-${firstErrorId}`;
+    const id =
+      firstErrorId === "numberOfBags"
+        ? "curated-bag-count"
+        : `curated-bag-${firstErrorId}`;
     const el = document.getElementById(id);
     el?.focus({ preventScroll: false });
   }, [firstErrorId]);
 
-  const setField = useCallback(<K extends keyof FormState>(field: K, value: FormState[K]) => {
-    setFormState((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => {
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
-  }, []);
+  const setField = useCallback(
+    <K extends keyof FormState>(field: K, value: FormState[K]) => {
+      setFormState((prev) => ({ ...prev, [field]: value }));
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    },
+    [],
+  );
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -84,15 +93,23 @@ export function CuratedBagRequestForm() {
         setErrors({});
       }, 600);
     },
-    [formState]
+    [formState],
   );
 
   if (submitted) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-16 space-y-4" role="status" aria-live="polite">
-        <div className="text-5xl" aria-hidden>🎉</div>
-        <h2 className="text-2xl font-medium text-[var(--kbk-text)]">Request submitted</h2>
-        <p className="text-[var(--kbk-text-muted)]">
+      <div
+        className="max-w-2xl mx-auto text-center py-16 space-y-4"
+        role="status"
+        aria-live="polite"
+      >
+        <div className="text-5xl" aria-hidden>
+          🎉
+        </div>
+        <h2 className="text-2xl font-medium text-[var(--kbk-text)]">
+          Request submitted
+        </h2>
+        <p className="text-base text-[var(--kbk-text-muted)] sm:text-lg">
           Thank you! We&apos;ve received your request and will be in touch soon.
         </p>
         <button
@@ -120,7 +137,10 @@ export function CuratedBagRequestForm() {
         </legend>
 
         <div>
-          <label htmlFor="curated-bag-size" className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5">
+          <label
+            htmlFor="curated-bag-size"
+            className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5"
+          >
             Size
           </label>
           <select
@@ -131,7 +151,9 @@ export function CuratedBagRequestForm() {
             required
             aria-required="true"
             aria-invalid={Boolean(errors.size)}
-            aria-describedby={errors.size ? "curated-bag-size-error" : undefined}
+            aria-describedby={
+              errors.size ? "curated-bag-size-error" : undefined
+            }
             className="w-full px-4 py-2.5 rounded-xl border border-[var(--kbk-border)] bg-white text-[var(--kbk-text)] focus:border-[var(--kbk-border-focus)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2 invalid:border-red-500"
             autoComplete="off"
           >
@@ -143,14 +165,21 @@ export function CuratedBagRequestForm() {
             ))}
           </select>
           {errors.size && (
-            <p id="curated-bag-size-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p
+              id="curated-bag-size-error"
+              className="mt-1 text-base text-red-600"
+              role="alert"
+            >
               {errors.size}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="curated-bag-count" className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5">
+          <label
+            htmlFor="curated-bag-count"
+            className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5"
+          >
             Number of bags
           </label>
           <input
@@ -161,16 +190,24 @@ export function CuratedBagRequestForm() {
             max={10}
             inputMode="numeric"
             value={formState.numberOfBags}
-            onChange={(e) => setField("numberOfBags", e.target.valueAsNumber || 0)}
+            onChange={(e) =>
+              setField("numberOfBags", e.target.valueAsNumber || 0)
+            }
             required
             aria-required="true"
             aria-invalid={Boolean(errors.numberOfBags)}
-            aria-describedby={errors.numberOfBags ? "curated-bag-count-error" : undefined}
+            aria-describedby={
+              errors.numberOfBags ? "curated-bag-count-error" : undefined
+            }
             className="w-full px-4 py-2.5 rounded-xl border border-[var(--kbk-border)] bg-white text-[var(--kbk-text)] focus:border-[var(--kbk-border-focus)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2 invalid:border-red-500 [font-variant-numeric:tabular-nums]"
             autoComplete="off"
           />
           {errors.numberOfBags && (
-            <p id="curated-bag-count-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p
+              id="curated-bag-count-error"
+              className="mt-1 text-base text-red-600"
+              role="alert"
+            >
               {errors.numberOfBags}
             </p>
           )}
@@ -181,12 +218,15 @@ export function CuratedBagRequestForm() {
         <legend className="text-lg font-semibold text-[var(--kbk-text)] mb-4">
           Contact information
         </legend>
-        <p className="text-sm text-[var(--kbk-text-muted)] mb-2">
+        <p className="mb-2 text-base text-[var(--kbk-text-muted)] sm:text-lg">
           How can we reach you about your request?
         </p>
 
         <div>
-          <label htmlFor="curated-bag-name" className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5">
+          <label
+            htmlFor="curated-bag-name"
+            className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5"
+          >
             Name
           </label>
           <input
@@ -198,21 +238,30 @@ export function CuratedBagRequestForm() {
             required
             aria-required="true"
             aria-invalid={Boolean(errors.name)}
-            aria-describedby={errors.name ? "curated-bag-name-error" : undefined}
+            aria-describedby={
+              errors.name ? "curated-bag-name-error" : undefined
+            }
             placeholder="Your name…"
             autoComplete="name"
             spellCheck={false}
             className="w-full px-4 py-2.5 rounded-xl border border-[var(--kbk-border)] bg-white text-[var(--kbk-text)] focus:border-[var(--kbk-border-focus)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2 invalid:border-red-500"
           />
           {errors.name && (
-            <p id="curated-bag-name-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p
+              id="curated-bag-name-error"
+              className="mt-1 text-base text-red-600"
+              role="alert"
+            >
               {errors.name}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="curated-bag-phone" className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5">
+          <label
+            htmlFor="curated-bag-phone"
+            className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5"
+          >
             Phone
           </label>
           <input
@@ -224,21 +273,33 @@ export function CuratedBagRequestForm() {
             required
             aria-required="true"
             aria-invalid={Boolean(errors.phone)}
-            aria-describedby={errors.phone ? "curated-bag-phone-error" : undefined}
+            aria-describedby={
+              errors.phone ? "curated-bag-phone-error" : undefined
+            }
             placeholder="(555) 123-4567…"
             autoComplete="tel"
             className="w-full px-4 py-2.5 rounded-xl border border-[var(--kbk-border)] bg-white text-[var(--kbk-text)] focus:border-[var(--kbk-border-focus)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2 invalid:border-red-500"
           />
           {errors.phone && (
-            <p id="curated-bag-phone-error" className="mt-1 text-sm text-red-600" role="alert">
+            <p
+              id="curated-bag-phone-error"
+              className="mt-1 text-base text-red-600"
+              role="alert"
+            >
               {errors.phone}
             </p>
           )}
         </div>
 
         <div>
-          <label htmlFor="curated-bag-email" className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5">
-            Email <span className="text-[var(--kbk-text-muted)] font-normal">(optional)</span>
+          <label
+            htmlFor="curated-bag-email"
+            className="block text-sm font-medium text-[var(--kbk-text)] mb-1.5"
+          >
+            Email{" "}
+            <span className="text-[var(--kbk-text-muted)] font-normal">
+              (optional)
+            </span>
           </label>
           <input
             id="curated-bag-email"

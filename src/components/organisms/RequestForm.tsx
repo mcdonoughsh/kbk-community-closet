@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRequestForm } from '@/hooks';
-import { trpc } from '@/lib/trpc';
-import { ContactInfoSection } from './ContactInfoSection';
-import { CuratedBagSection } from './CuratedBagSection';
-import { ClothingRequestSection } from './ClothingRequestSection';
-import { GearRequestSection } from './GearRequestSection';
-import type { RequestFormData } from '@/types';
+import { useState } from "react";
+import { useRequestForm } from "@/hooks";
+import { trpc } from "@/lib/trpc";
+import { ContactInfoSection } from "./ContactInfoSection";
+import { CuratedBagSection } from "./CuratedBagSection";
+import { ClothingRequestSection } from "./ClothingRequestSection";
+import { GearRequestSection } from "./GearRequestSection";
+import { RequestPickupSection } from "./RequestPickupSection";
+import type { RequestFormData } from "@/types";
 
 /**
  * Transform the local form data into the shape the API expects.
@@ -15,7 +16,11 @@ import type { RequestFormData } from '@/types';
  * items: clothing and gear (one API item per type per request).
  */
 function buildSubmitPayload(formData: RequestFormData) {
-  const items: { itemTypeName: string; size: string | null; gender: string | null }[] = [];
+  const items: {
+    itemTypeName: string;
+    size: string | null;
+    gender: string | null;
+  }[] = [];
 
   // Clothing: one API item per clothing-type per size/gender group
   for (const req of formData.clothingRequests) {
@@ -90,11 +95,14 @@ export function RequestForm() {
     if (!isValid || submitMutation.isPending) return;
 
     const payload = buildSubmitPayload(formData);
-    const hasCuratedBags = payload.curatedBags != null && payload.curatedBags.length > 0;
+    const hasCuratedBags =
+      payload.curatedBags != null && payload.curatedBags.length > 0;
     const hasItems = payload.items.length > 0;
 
     if (!hasCuratedBags && !hasItems) {
-      alert('Please request at least one curated bag (pick a size and quantity) or add specific clothing or gear items.');
+      alert(
+        "Please request at least one curated bag (pick a size and quantity) or add specific clothing or gear items.",
+      );
       return;
     }
 
@@ -103,8 +111,8 @@ export function RequestForm() {
       setSubmitted(true);
       resetForm();
     } catch (err) {
-      console.error('Submit error:', err);
-      alert('Something went wrong submitting your request. Please try again.');
+      console.error("Submit error:", err);
+      alert("Something went wrong submitting your request. Please try again.");
     }
   };
 
@@ -116,7 +124,7 @@ export function RequestForm() {
         <h2 className="text-2xl font-medium text-[#171717]">
           Request Submitted!
         </h2>
-        <p className="text-[#171717]/80">
+        <p className="text-base text-[#171717]/80 sm:text-lg">
           Thank you! We&apos;ve received your request and will be in touch soon.
         </p>
         <button
@@ -131,72 +139,72 @@ export function RequestForm() {
   }
 
   return (
-    <form
-      onSubmit={(e) => e.preventDefault()}
-      className="space-y-8 max-w-2xl mx-auto"
-    >
-      {/* 1. Contact info */}
-      <ContactInfoSection
-        name={formData.contact.name}
-        phone={formData.contact.phone}
-        email={formData.contact.email}
-        onNameChange={updateName}
-        onPhoneChange={updatePhone}
-        onEmailChange={updateEmail}
-      />
+    <div className="mx-auto max-w-2xl space-y-10">
+      <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
+        {/* 1. Contact info */}
+        <ContactInfoSection
+          name={formData.contact.name}
+          phone={formData.contact.phone}
+          email={formData.contact.email}
+          onNameChange={updateName}
+          onPhoneChange={updatePhone}
+          onEmailChange={updateEmail}
+        />
 
-      {/* 2. Curated bags */}
-      <CuratedBagSection
-        curatedBagRequests={formData.curatedBagRequests}
-        onSizeChange={updateCuratedBagSize}
-        onQuantityChange={updateCuratedBagQuantity}
-        onGenderChange={updateCuratedBagGender}
-        onAdd={addCuratedBagRequest}
-        onRemove={removeCuratedBagRequest}
-      />
+        {/* 2. Curated bags */}
+        <CuratedBagSection
+          curatedBagRequests={formData.curatedBagRequests}
+          onSizeChange={updateCuratedBagSize}
+          onQuantityChange={updateCuratedBagQuantity}
+          onGenderChange={updateCuratedBagGender}
+          onAdd={addCuratedBagRequest}
+          onRemove={removeCuratedBagRequest}
+        />
 
-      {/* 3. Additional requested clothing */}
-      <ClothingRequestSection
-        clothingRequests={formData.clothingRequests}
-        onSizeChange={updateClothingSize}
-        onGenderChange={updateClothingGender}
-        onClothingTypesChange={updateClothingTypes}
-        onRemove={removeClothingRequest}
-        onAdd={addClothingRequest}
-      />
+        {/* 3. Additional requested clothing */}
+        <ClothingRequestSection
+          clothingRequests={formData.clothingRequests}
+          onSizeChange={updateClothingSize}
+          onGenderChange={updateClothingGender}
+          onClothingTypesChange={updateClothingTypes}
+          onRemove={removeClothingRequest}
+          onAdd={addClothingRequest}
+        />
 
-      {/* 4. Gear requests */}
-      <GearRequestSection
-        gearRequest={formData.gearRequest}
-        onGearTypesChange={updateGearTypes}
-        onAdditionalInfoChange={updateAdditionalInfo}
-      />
+        {/* 4. Gear requests */}
+        <GearRequestSection
+          gearRequest={formData.gearRequest}
+          onGearTypesChange={updateGearTypes}
+          onAdditionalInfoChange={updateAdditionalInfo}
+        />
 
-      {/* Submit Button */}
-      <div className="pt-4">
-        <button
-          type="button"
-          onClick={handleSubmitClick}
-          disabled={!isValid || submitMutation.isPending}
-          className="w-full sm:w-auto rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
-        >
-          {submitMutation.isPending ? 'Submitting...' : 'Submit Request'}
-        </button>
-      </div>
+        {/* Submit Button */}
+        <div className="pt-4">
+          <button
+            type="button"
+            onClick={handleSubmitClick}
+            disabled={!isValid || submitMutation.isPending}
+            className="w-full sm:w-auto rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {submitMutation.isPending ? "Submitting…" : "Submit Request"}
+          </button>
+        </div>
 
-      {/* Error message from API */}
-      {submitMutation.isError && (
-        <p className="text-sm text-red-600 text-center">
-          {submitMutation.error.message}
-        </p>
-      )}
+        {/* Error message from API */}
+        {submitMutation.isError && (
+          <p className="text-base text-red-600 text-center">
+            {submitMutation.error.message}
+          </p>
+        )}
 
-      {/* Validation message */}
-      {!isValid && (
-        <p className="text-sm text-red-600 text-center">
-          Please enter a phone number to submit your request.
-        </p>
-      )}
-    </form>
+        {/* Validation message */}
+        {!isValid && (
+          <p className="text-base text-red-600 text-center">
+            Please enter a phone number to submit your request.
+          </p>
+        )}
+      </form>
+      <RequestPickupSection />
+    </div>
   );
 }

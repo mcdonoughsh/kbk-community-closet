@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const PROMO_CONFIG = {
+type PromoBannerConfig = {
+  imageSrc: string;
+  imageAlt: string;
+  headline?: string;
+};
+
+const PROMO_CONFIG: Record<"spring" | "fall", PromoBannerConfig> = {
   spring: {
     imageSrc: "/images/homepage/promo/spring-event-text.png",
     imageAlt: "Spring Event",
@@ -10,9 +16,8 @@ const PROMO_CONFIG = {
   fall: {
     imageSrc: "/images/homepage/promo/fall-event-text.png",
     imageAlt: "Fall Event",
-    headline: "Fall Pop-up",
   },
-} as const;
+};
 
 export type HomePromoBannerVariant = keyof typeof PROMO_CONFIG;
 
@@ -37,7 +42,9 @@ export function HomePromoBanner({ variant }: { variant: HomePromoBannerVariant }
           className="h-8 w-auto sm:h-10"
           sizes="(max-width: 640px) 140px, 180px"
         />
-        <h1 className="text-[#e45e5e] text-lg font-semibold">{headline}</h1>
+        {headline && (
+          <h1 className="text-[#e45e5e] text-lg font-semibold">{headline}</h1>
+        )}
       </div>
       <div className="flex justify-center sm:justify-end">
         <Link

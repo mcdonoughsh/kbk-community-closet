@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface FormFieldProps {
   label: string;
@@ -19,7 +19,7 @@ interface FormFieldProps {
 export function FormField({
   label,
   name,
-  type = 'text',
+  type = "text",
   placeholder,
   value,
   onChange,
@@ -37,8 +37,8 @@ export function FormField({
       onChange(customEvent.detail.value);
     };
 
-    input.addEventListener('kbk-input-change', handleChange);
-    return () => input.removeEventListener('kbk-input-change', handleChange);
+    input.addEventListener("kbk-input-change", handleChange);
+    return () => input.removeEventListener("kbk-input-change", handleChange);
   }, [onChange]);
 
   return (
@@ -52,9 +52,7 @@ export function FormField({
         value={value}
         required={required || undefined}
       />
-      {helperText && (
-        <p className="text-xs text-gray-500 mt-1">{helperText}</p>
-      )}
+      {helperText && <p className="text-sm text-gray-500 mt-1">{helperText}</p>}
     </div>
   );
 }

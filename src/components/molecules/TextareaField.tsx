@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface TextareaFieldProps {
   label: string;
@@ -35,8 +35,9 @@ export function TextareaField({
       onChange(customEvent.detail.value);
     };
 
-    textarea.addEventListener('kbk-textarea-change', handleChange);
-    return () => textarea.removeEventListener('kbk-textarea-change', handleChange);
+    textarea.addEventListener("kbk-textarea-change", handleChange);
+    return () =>
+      textarea.removeEventListener("kbk-textarea-change", handleChange);
   }, [onChange]);
 
   return (
@@ -49,9 +50,7 @@ export function TextareaField({
         value={value}
         rows={rows}
       />
-      {helperText && (
-        <p className="text-xs text-gray-500 mt-1">{helperText}</p>
-      )}
+      {helperText && <p className="text-sm text-gray-500 mt-1">{helperText}</p>}
     </div>
   );
 }

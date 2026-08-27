@@ -68,10 +68,10 @@ export class KbkFormSection extends HTMLElement {
         }
         
         .description {
-          font-size: 0.875rem;
+          font-size: 1rem;
           color: rgba(23, 23, 23, 0.8);
           margin: 0 0 1rem 0;
-          line-height: 1.5;
+          line-height: 1.6;
         }
         
         .content {
