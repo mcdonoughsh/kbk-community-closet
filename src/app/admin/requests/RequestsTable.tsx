@@ -85,6 +85,10 @@ function genderAccentClass(gender: string): string {
   return "text-gray-700";
 }
 
+function isShoesItem(item: RequestWithRelations["items"][number]): boolean {
+  return item.itemType.name.trim().toLowerCase() === "shoes";
+}
+
 function getClothingGrouped(
   clothing: RequestWithRelations["items"]
 ): Record<string, { types: string[]; firstId: string }> {
@@ -203,15 +207,18 @@ function ItemsRequestedDisplay({
   items: RequestWithRelations["items"];
 }) {
   const curated = items.filter((i) => i.itemType.category === "CURATED_BAG");
-  const clothing = items.filter((i) => i.itemType.category === "CLOTHING");
+  const clothingAll = items.filter((i) => i.itemType.category === "CLOTHING");
+  const shoes = clothingAll.filter(isShoesItem);
+  const clothing = clothingAll.filter((i) => !isShoesItem(i));
   const gear = items.filter((i) => i.itemType.category === "GEAR");
   const gearDisplay = gearItemsWithNames(gear);
 
   const hasCurated = curated.length > 0;
   const hasClothing = clothing.length > 0;
+  const hasShoes = shoes.length > 0;
   const hasGear = gearDisplay.length > 0;
 
-  if (!hasCurated && !hasClothing && !hasGear) {
+  if (!hasCurated && !hasClothing && !hasShoes && !hasGear) {
     return <span className="text-gray-300">—</span>;
   }
 
@@ -272,6 +279,31 @@ function ItemsRequestedDisplay({
         </div>
       )}
 
+      {hasShoes && (
+        <div>
+          <ItemsSectionHeading>Shoes</ItemsSectionHeading>
+          <div className="flex flex-col gap-0">
+            {shoes.map((s) => (
+              <p
+                key={s.id}
+                className="flex flex-wrap items-center gap-x-1.5 text-sm leading-snug text-gray-700"
+              >
+                <span className="text-gray-500">Shoe size</span>
+                <span className={SIZE_TEXT_CLASS}>{s.size || "?"}</span>
+                {s.gender ? (
+                  <>
+                    <DotSeparator />
+                    <span className={genderAccentClass(s.gender)}>
+                      {s.gender}
+                    </span>
+                  </>
+                ) : null}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
+
       {hasGear && (
         <div>
           <ItemsSectionHeading>Gear</ItemsSectionHeading>
@@ -287,7 +319,9 @@ function ItemsRequestedDisplay({
 /** Format items into a readable summary (matches ItemsRequestedDisplay sections) */
 function formatItems(items: RequestWithRelations["items"]): string {
   const curated = items.filter((i) => i.itemType.category === "CURATED_BAG");
-  const clothing = items.filter((i) => i.itemType.category === "CLOTHING");
+  const clothingAll = items.filter((i) => i.itemType.category === "CLOTHING");
+  const shoes = clothingAll.filter(isShoesItem);
+  const clothing = clothingAll.filter((i) => !isShoesItem(i));
   const gear = gearItemsWithNames(
     items.filter((i) => i.itemType.category === "GEAR")
   );
@@ -315,6 +349,15 @@ function formatItems(items: RequestWithRelations["items"]): string {
       );
     }
     sections.push(`Clothing\n${lines.join("\n")}`);
+  }
+
+  if (shoes.length > 0) {
+    const lines = shoes.map((s) => {
+      const size = s.size || "?";
+      const genderPart = s.gender ? `${SIZE_GENDER_SEP}${s.gender}` : "";
+      return `Shoe size ${size}${genderPart}`;
+    });
+    sections.push(`Shoes\n${lines.join("\n")}`);
   }
 
   if (gear.length > 0) {
