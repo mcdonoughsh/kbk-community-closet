@@ -2,6 +2,7 @@ import { pingDatabase } from "@/lib/prisma";
 import { router, publicProcedure } from "../trpc";
 import { requestRouter } from "./request";
 import { adminRouter } from "./admin";
+import { volunteerRouter } from "./volunteer";
 
 /**
  * Main tRPC router
@@ -19,6 +20,7 @@ export const appRouter = router({
 
   request: requestRouter,
   admin: adminRouter,
+  volunteer: volunteerRouter,
 });
 
 export type AppRouter = typeof appRouter;

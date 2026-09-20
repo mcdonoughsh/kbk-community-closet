@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/components/organisms/Navigation";
 import { GiveOnlineSection } from "@/components/organisms/GiveOnlineSection";
 import { GiveOnlineSectionGate } from "@/components/organisms/GiveOnlineSectionGate";
+import { SiteFooter } from "@/components/organisms/SiteFooter";
 import JsonLd from "@/components/JsonLd";
 import { TRPCProvider } from "@/components/TRPCProvider";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
               <GiveOnlineSection />
             </GiveOnlineSectionGate>
           </main>
+          <SiteFooter />
         </TRPCProvider>
       </body>
     </html>

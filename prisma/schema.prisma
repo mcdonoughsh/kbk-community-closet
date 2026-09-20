@@ -32,6 +32,11 @@ enum ItemCategory {
   CURATED_BAG
 }
 
+enum VolunteerSignupSource {
+  PUBLIC
+  ADMIN
+}
+
 // ─── Models ──────────────────────────────────────────────
 
 model ItemType {
@@ -45,16 +50,17 @@ model ItemType {
 }
 
 model Contact {
-  id            String       @id @default(uuid())
-  name          String
-  phone         String
-  email         String?
-  userProfileId String?      @unique
-  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id])
-  requests      Request[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  isDeleted     Boolean      @default(false)
+  id               String            @id @default(uuid())
+  name             String
+  phone            String
+  email            String?
+  userProfileId    String?           @unique
+  userProfile      UserProfile?      @relation(fields: [userProfileId], references: [id])
+  requests         Request[]
+  volunteerSignups VolunteerSignup[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  isDeleted        Boolean           @default(false)
 }
 
 model UserProfile {
@@ -96,4 +102,29 @@ model RequestItem {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   isDeleted  Boolean  @default(false)
+}
+
+model VolunteerSlot {
+  id        String            @id @default(uuid())
+  startsAt  DateTime
+  endsAt    DateTime
+  capacity  Int
+  signups   VolunteerSignup[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  isDeleted Boolean           @default(false)
+}
+
+model VolunteerSignup {
+  id        String                 @id @default(uuid())
+  slotId    String
+  slot      VolunteerSlot          @relation(fields: [slotId], references: [id])
+  contactId String
+  contact   Contact                @relation(fields: [contactId], references: [id])
+  source    VolunteerSignupSource  @default(PUBLIC)
+  createdAt DateTime               @default(now())
+  updatedAt DateTime               @updatedAt
+  isDeleted Boolean                @default(false)
+
+  @@unique([slotId, contactId])
 }

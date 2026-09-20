@@ -19,6 +19,7 @@
     "db:seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.6.1",
     "@prisma/client": "^6.19.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
