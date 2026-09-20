@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRequestForm } from "@/hooks";
 import { trpc } from "@/lib/trpc";
+import { formatSizeRange } from "@/lib/sizes";
 import { ContactInfoSection } from "./ContactInfoSection";
 import { CuratedBagSection } from "./CuratedBagSection";
 import { ClothingRequestSection } from "./ClothingRequestSection";
@@ -12,7 +13,7 @@ import type { RequestFormData } from "@/types";
 
 /**
  * Transform the local form data into the shape the API expects.
- * curatedBags: only entries with a size selected; each has size, quantity, optional gender.
+ * curatedBags: only entries with a size selected; quantity is always 1 per child row.
  * items: clothing and gear (one API item per type per request).
  */
 function buildSubmitPayload(formData: RequestFormData) {
@@ -24,12 +25,13 @@ function buildSubmitPayload(formData: RequestFormData) {
 
   // Clothing: one API item per clothing-type per size/gender group
   for (const req of formData.clothingRequests) {
+    const sizeLabel = formatSizeRange(req.sizeFrom, req.sizeTo);
     for (const clothingType of req.clothingTypes) {
       const isShoes = clothingType === "Shoes";
       const shoeSize = req.shoeSize.trim();
       items.push({
         itemTypeName: clothingType,
-        size: isShoes ? (shoeSize || null) : req.size,
+        size: isShoes ? (shoeSize || null) : sizeLabel,
         gender: req.gender,
       });
     }
@@ -45,12 +47,16 @@ function buildSubmitPayload(formData: RequestFormData) {
   }
 
   const curatedBags = formData.curatedBagRequests
-    .filter((entry) => entry.size != null && entry.quantity >= 1)
-    .map((entry) => ({
-      size: entry.size!,
-      quantity: entry.quantity,
-      ...(entry.gender != null ? { gender: entry.gender } : {}),
-    }));
+    .map((entry) => {
+      const size = formatSizeRange(entry.sizeFrom, entry.sizeTo);
+      if (size == null) return null;
+      return {
+        size,
+        quantity: 1,
+        ...(entry.gender != null ? { gender: entry.gender } : {}),
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => entry != null);
 
   return {
     contact: {
@@ -76,12 +82,11 @@ export function RequestForm() {
     updateEmail,
     addCuratedBagRequest,
     removeCuratedBagRequest,
-    updateCuratedBagSize,
-    updateCuratedBagQuantity,
+    updateCuratedBagSizeRange,
     updateCuratedBagGender,
     addClothingRequest,
     removeClothingRequest,
-    updateClothingSize,
+    updateClothingSizeRange,
     updateClothingGender,
     updateClothingTypes,
     updateClothingShoeSize,
@@ -104,7 +109,7 @@ export function RequestForm() {
 
     if (!hasCuratedBags && !hasItems) {
       alert(
-        "Please request at least one curated bag (pick a size and quantity) or add specific clothing or gear items.",
+        "Please request at least one curated bag (pick a size) or add specific clothing or gear items.",
       );
       return;
     }
@@ -123,8 +128,10 @@ export function RequestForm() {
   if (submitted) {
     return (
       <div className="max-w-2xl mx-auto text-center py-16 space-y-4">
-        <div className="text-5xl">🎉</div>
-        <h2 className="text-2xl font-medium text-[#171717]">
+        <div className="text-5xl" aria-hidden="true">
+          🎉
+        </div>
+        <h2 className="text-2xl font-medium text-[#171717] text-pretty">
           Request Submitted!
         </h2>
         <p className="text-base text-[#171717]/80 sm:text-lg">
@@ -133,7 +140,7 @@ export function RequestForm() {
         <button
           type="button"
           onClick={() => setSubmitted(false)}
-          className="mt-4 rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
+          className="mt-4 rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 touch-manipulation"
         >
           Submit Another Request
         </button>
@@ -157,8 +164,7 @@ export function RequestForm() {
         {/* 2. Curated bags */}
         <CuratedBagSection
           curatedBagRequests={formData.curatedBagRequests}
-          onSizeChange={updateCuratedBagSize}
-          onQuantityChange={updateCuratedBagQuantity}
+          onSizeRangeChange={updateCuratedBagSizeRange}
           onGenderChange={updateCuratedBagGender}
           onAdd={addCuratedBagRequest}
           onRemove={removeCuratedBagRequest}
@@ -167,7 +173,7 @@ export function RequestForm() {
         {/* 3. Additional requested clothing */}
         <ClothingRequestSection
           clothingRequests={formData.clothingRequests}
-          onSizeChange={updateClothingSize}
+          onSizeRangeChange={updateClothingSizeRange}
           onGenderChange={updateClothingGender}
           onClothingTypesChange={updateClothingTypes}
           onShoeSizeChange={updateClothingShoeSize}
@@ -188,7 +194,7 @@ export function RequestForm() {
             type="button"
             onClick={handleSubmitClick}
             disabled={!isValid || submitMutation.isPending}
-            className="w-full sm:w-auto rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto rounded-xl bg-[#025a9a] px-6 py-3.5 text-white font-semibold hover:bg-[#025a9a]/90 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed touch-manipulation"
           >
             {submitMutation.isPending ? "Submitting…" : "Submit Request"}
           </button>
@@ -196,7 +202,7 @@ export function RequestForm() {
 
         {/* Error message from API */}
         {submitMutation.isError && (
-          <p className="text-base text-red-600 text-center">
+          <p className="text-base text-red-600 text-center" role="alert">
             {submitMutation.error.message}
           </p>
         )}

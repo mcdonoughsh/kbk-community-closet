@@ -18,7 +18,8 @@ const submitRequestSchema = z.object({
     .array(
       z.object({
         size: z.string().min(1),
-        quantity: z.number().int().min(1).max(10),
+        /** Defaults to 1 — one bag per child request row */
+        quantity: z.number().int().min(1).max(10).optional().default(1),
         gender: z.string().nullable().optional(),
       })
     )
@@ -134,7 +135,7 @@ export const requestRouter = router({
               itemTypeId: curatedBagTypeId,
               size: bag.size,
               gender: bag.gender ?? null,
-              quantity: bag.quantity,
+              quantity: bag.quantity ?? 1,
             }))
           : [];
 

@@ -2,12 +2,11 @@ import { useState, useCallback } from 'react';
 import type {
   RequestFormData,
   ClothingRequest,
-  ClothingSize,
   Gender,
   ClothingType,
   GearType,
-  CuratedBagSize,
   CuratedBagEntry,
+  KidSize,
 } from '@/types';
 
 // Generate unique ID for list entries
@@ -17,7 +16,8 @@ const generateId = (prefix: string) =>
 // Initial empty clothing request
 const createEmptyClothingRequest = (): ClothingRequest => ({
   id: generateId('clothing'),
-  size: null,
+  sizeFrom: null,
+  sizeTo: null,
   gender: null,
   clothingTypes: [],
   shoeSize: '',
@@ -26,8 +26,8 @@ const createEmptyClothingRequest = (): ClothingRequest => ({
 // Initial empty curated bag entry
 const createEmptyCuratedBagEntry = (): CuratedBagEntry => ({
   id: generateId('curated'),
-  size: null,
-  quantity: 1,
+  sizeFrom: null,
+  sizeTo: null,
   gender: null,
 });
 
@@ -48,7 +48,7 @@ const createInitialFormData = (): RequestFormData => ({
 
 interface UseRequestFormReturn {
   formData: RequestFormData;
-  
+
   // Contact methods
   updateName: (name: string) => void;
   updatePhone: (phone: string) => void;
@@ -57,22 +57,29 @@ interface UseRequestFormReturn {
   // Curated bag request methods (multiple entries)
   addCuratedBagRequest: () => void;
   removeCuratedBagRequest: (id: string) => void;
-  updateCuratedBagSize: (id: string, size: CuratedBagSize | null) => void;
-  updateCuratedBagQuantity: (id: string, quantity: number) => void;
+  updateCuratedBagSizeRange: (
+    id: string,
+    sizeFrom: KidSize | null,
+    sizeTo: KidSize | null,
+  ) => void;
   updateCuratedBagGender: (id: string, gender: Gender | null) => void;
 
   // Clothing request methods
   addClothingRequest: () => void;
   removeClothingRequest: (id: string) => void;
-  updateClothingSize: (id: string, size: ClothingSize | null) => void;
+  updateClothingSizeRange: (
+    id: string,
+    sizeFrom: KidSize | null,
+    sizeTo: KidSize | null,
+  ) => void;
   updateClothingGender: (id: string, gender: Gender | null) => void;
   updateClothingTypes: (id: string, types: ClothingType[]) => void;
   updateClothingShoeSize: (id: string, shoeSize: string) => void;
-  
+
   // Gear request methods
   updateGearTypes: (types: GearType[]) => void;
   updateAdditionalInfo: (info: string) => void;
-  
+
   // Form methods
   resetForm: () => void;
   isValid: boolean;
@@ -121,29 +128,23 @@ export function useRequestForm(): UseRequestFormReturn {
     }));
   }, []);
 
-  const updateCuratedBagSize = useCallback((id: string, size: CuratedBagSize | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      curatedBagRequests: prev.curatedBagRequests.map((entry) =>
-        entry.id === id ? { ...entry, size } : entry
-      ),
-    }));
-  }, []);
-
-  const updateCuratedBagQuantity = useCallback((id: string, quantity: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      curatedBagRequests: prev.curatedBagRequests.map((entry) =>
-        entry.id === id ? { ...entry, quantity } : entry
-      ),
-    }));
-  }, []);
+  const updateCuratedBagSizeRange = useCallback(
+    (id: string, sizeFrom: KidSize | null, sizeTo: KidSize | null) => {
+      setFormData((prev) => ({
+        ...prev,
+        curatedBagRequests: prev.curatedBagRequests.map((entry) =>
+          entry.id === id ? { ...entry, sizeFrom, sizeTo } : entry,
+        ),
+      }));
+    },
+    [],
+  );
 
   const updateCuratedBagGender = useCallback((id: string, gender: Gender | null) => {
     setFormData((prev) => ({
       ...prev,
       curatedBagRequests: prev.curatedBagRequests.map((entry) =>
-        entry.id === id ? { ...entry, gender } : entry
+        entry.id === id ? { ...entry, gender } : entry,
       ),
     }));
   }, []);
@@ -163,20 +164,23 @@ export function useRequestForm(): UseRequestFormReturn {
     }));
   }, []);
 
-  const updateClothingSize = useCallback((id: string, size: ClothingSize | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      clothingRequests: prev.clothingRequests.map((req) =>
-        req.id === id ? { ...req, size } : req
-      ),
-    }));
-  }, []);
+  const updateClothingSizeRange = useCallback(
+    (id: string, sizeFrom: KidSize | null, sizeTo: KidSize | null) => {
+      setFormData((prev) => ({
+        ...prev,
+        clothingRequests: prev.clothingRequests.map((req) =>
+          req.id === id ? { ...req, sizeFrom, sizeTo } : req,
+        ),
+      }));
+    },
+    [],
+  );
 
   const updateClothingGender = useCallback((id: string, gender: Gender | null) => {
     setFormData((prev) => ({
       ...prev,
       clothingRequests: prev.clothingRequests.map((req) =>
-        req.id === id ? { ...req, gender } : req
+        req.id === id ? { ...req, gender } : req,
       ),
     }));
   }, []);
@@ -196,7 +200,7 @@ export function useRequestForm(): UseRequestFormReturn {
     setFormData((prev) => ({
       ...prev,
       clothingRequests: prev.clothingRequests.map((req) =>
-        req.id === id ? { ...req, shoeSize } : req
+        req.id === id ? { ...req, shoeSize } : req,
       ),
     }));
   }, []);
@@ -231,12 +235,11 @@ export function useRequestForm(): UseRequestFormReturn {
     updateEmail,
     addCuratedBagRequest,
     removeCuratedBagRequest,
-    updateCuratedBagSize,
-    updateCuratedBagQuantity,
+    updateCuratedBagSizeRange,
     updateCuratedBagGender,
     addClothingRequest,
     removeClothingRequest,
-    updateClothingSize,
+    updateClothingSizeRange,
     updateClothingGender,
     updateClothingTypes,
     updateClothingShoeSize,

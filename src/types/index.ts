@@ -1,7 +1,8 @@
 // Shared types for the application
 
-// Size options for clothing requests
-export type ClothingSize = 'Newborn' | '3-6m' | '6-9m' | '9-12m' | '12-18m' | '2T' | '3T';
+import type { KidSize } from '@/lib/sizes';
+
+export type { KidSize };
 
 // Gender options
 export type Gender = 'Girl' | 'Boy';
@@ -15,7 +16,8 @@ export type GearType = 'Crib' | 'Carrier' | 'Pack-n-play' | 'Boppy';
 // Individual clothing request (one per child/size)
 export interface ClothingRequest {
   id: string;
-  size: ClothingSize | null;
+  sizeFrom: KidSize | null;
+  sizeTo: KidSize | null;
   gender: Gender | null;
   clothingTypes: ClothingType[];
   /** Free-text shoe size; used when Shoes is among clothingTypes */
@@ -28,23 +30,10 @@ export interface GearRequest {
   additionalInfo: string;
 }
 
-// Curated bag request (size + quantity)
-export type CuratedBagSize =
-  | 'Newborn'
-  | '0–3 months'
-  | '3–6 months'
-  | '6–9 months'
-  | '9–12 months'
-  | '12–18 months'
-  | '18–24 months'
-  | '2T'
-  | '3T'
-  | '4T and up';
-
-// Single curated bag entry (size + quantity, optional gender)
+// Single curated bag entry (size range + optional gender)
 export interface CuratedBagRequest {
-  size: CuratedBagSize | null;
-  quantity: number;
+  sizeFrom: KidSize | null;
+  sizeTo: KidSize | null;
   gender: Gender | null;
 }
 

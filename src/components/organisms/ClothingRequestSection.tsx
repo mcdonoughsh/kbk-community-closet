@@ -1,26 +1,13 @@
 'use client';
 
-import { ChipGroup, FormField, IconChipGroup } from '@/components/molecules';
-import type { ClothingRequest, ClothingSize, Gender, ClothingType, ChipOption } from '@/types';
+import { ChipGroup, FormField, IconChipGroup, SizeRangePicker } from '@/components/molecules';
+import type { ClothingRequest, Gender, ClothingType, ChipOption, KidSize } from '@/types';
 
-// Size options
-const sizeOptions: ChipOption<ClothingSize>[] = [
-  { value: 'Newborn', label: 'Newborn' },
-  { value: '3-6m', label: '3-6m' },
-  { value: '6-9m', label: '6-9m' },
-  { value: '9-12m', label: '9-12m' },
-  { value: '12-18m', label: '12-18m' },
-  { value: '2T', label: '2T' },
-  { value: '3T', label: '3T' },
-];
-
-// Gender options
 const genderOptions: ChipOption<Gender>[] = [
   { value: 'Girl', label: 'Girl' },
   { value: 'Boy', label: 'Boy' },
 ];
 
-// Clothing type options
 const clothingTypeOptions: ChipOption<ClothingType>[] = [
   { value: 'shirts', label: 'Shirts' },
   { value: 'pants', label: 'Pants' },
@@ -42,7 +29,7 @@ function TrashIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      aria-hidden
+      aria-hidden="true"
     >
       <polyline points="3 6 5 6 21 6" />
       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
@@ -54,7 +41,11 @@ function TrashIcon() {
 
 interface ClothingRequestSectionProps {
   clothingRequests: ClothingRequest[];
-  onSizeChange: (id: string, size: ClothingSize | null) => void;
+  onSizeRangeChange: (
+    id: string,
+    sizeFrom: KidSize | null,
+    sizeTo: KidSize | null,
+  ) => void;
   onGenderChange: (id: string, gender: Gender | null) => void;
   onClothingTypesChange: (id: string, types: ClothingType[]) => void;
   onShoeSizeChange: (id: string, shoeSize: string) => void;
@@ -63,11 +54,11 @@ interface ClothingRequestSectionProps {
 }
 
 /**
- * ClothingRequestSection - One section with multiple clothing request rows (same pattern as Curated bags).
+ * ClothingRequestSection — Specific clothing requests with size range, gender, and types.
  */
 export function ClothingRequestSection({
   clothingRequests,
-  onSizeChange,
+  onSizeRangeChange,
   onGenderChange,
   onClothingTypesChange,
   onShoeSizeChange,
@@ -77,7 +68,7 @@ export function ClothingRequestSection({
   return (
     <kbk-form-section
       heading="3. Additional requested clothing"
-      description="Need specific items? Add size, gender, and types for each request."
+      description="Need specific items? Pick a size (or add a range), gender, and types for each request."
     >
       <div className="space-y-6">
         {clothingRequests.map((request, index) => (
@@ -85,34 +76,37 @@ export function ClothingRequestSection({
             key={request.id}
             className="rounded-xl bg-[#f8fafc] p-4 ring-1 ring-[#025a9a]/10 space-y-4"
           >
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-sm font-medium text-[#171717]/80">
+            <div className="flex items-center justify-between gap-2 min-w-0">
+              <span className="text-sm font-medium text-[#171717]/80 truncate">
                 Request {index + 1}
               </span>
-              {clothingRequests.length > 1 && (
+              {clothingRequests.length > 1 ? (
                 <button
                   type="button"
                   onClick={() => onRemove(request.id)}
-                  className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
+                  className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 touch-manipulation"
                   aria-label={`Remove clothing request ${index + 1}`}
                 >
                   <TrashIcon />
                 </button>
-              )}
+              ) : null}
             </div>
             <div className="space-y-6">
-              <ChipGroup
-                label="Size"
-                options={sizeOptions}
-                selected={request.size ? [request.size] : []}
-                onChange={(selected) => onSizeChange(request.id, selected[0] ?? null)}
-                mode="single"
+              <SizeRangePicker
+                id={`clothing-size-${request.id}`}
+                sizeFrom={request.sizeFrom}
+                sizeTo={request.sizeTo}
+                onChange={(sizeFrom, sizeTo) =>
+                  onSizeRangeChange(request.id, sizeFrom, sizeTo)
+                }
               />
               <ChipGroup
                 label="Gender"
                 options={genderOptions}
                 selected={request.gender ? [request.gender] : []}
-                onChange={(selected) => onGenderChange(request.id, selected[0] ?? null)}
+                onChange={(selected) =>
+                  onGenderChange(request.id, selected[0] ?? null)
+                }
                 mode="single"
               />
               <IconChipGroup
@@ -127,7 +121,7 @@ export function ClothingRequestSection({
                   label="Shoe size"
                   name={`shoe-size-${request.id}`}
                   type="text"
-                  placeholder="e.g. 5C, 8 toddler, 1 youth"
+                  placeholder="e.g. 5C, 8 toddler, 1 youth…"
                   value={request.shoeSize}
                   onChange={(value) => onShoeSizeChange(request.id, value)}
                   helperText="Kids’ shoe sizes often differ from clothing size—enter the size that fits."
@@ -139,9 +133,9 @@ export function ClothingRequestSection({
         <button
           type="button"
           onClick={onAdd}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#025a9a]/30 px-4 py-3 text-[#025a9a] font-medium hover:bg-[#025a9a]/5 hover:border-[#025a9a]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#025a9a]/30 px-4 py-3 text-[#025a9a] font-medium hover:bg-[#025a9a]/5 hover:border-[#025a9a]/50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 touch-manipulation"
         >
-          <span aria-hidden>+</span>
+          <span aria-hidden="true">+</span>
           Add another clothing request
         </button>
       </div>
