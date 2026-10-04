@@ -58,6 +58,54 @@ export function formatOrgSlotRange(
   return `${formatOrgDateTime(start)} – ${formatOrgDateTime(end)}`;
 }
 
+/** Calendar day in the org timezone as YYYY-MM-DD, for grouping. */
+export function toOrgDateKey(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: ORG_TZ,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
+
+/**
+ * Day heading in the org timezone.
+ * Example: "Saturday, November 1"
+ */
+export function formatOrgDayLabel(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: ORG_TZ,
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(d);
+}
+
+/**
+ * Time-only range for use under a day heading: "9:00 AM – 12:00 PM".
+ * Falls back to the full range when the slot spans multiple days.
+ */
+export function formatOrgTimeRange(
+  startsAt: Date | string,
+  endsAt: Date | string
+): string {
+  const start = typeof startsAt === "string" ? new Date(startsAt) : startsAt;
+  const end = typeof endsAt === "string" ? new Date(endsAt) : endsAt;
+
+  if (toOrgDateKey(start) !== toOrgDateKey(end)) {
+    return formatOrgSlotRange(start, end);
+  }
+
+  const timeFmt = new Intl.DateTimeFormat("en-US", {
+    timeZone: ORG_TZ,
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return `${timeFmt.format(start)} – ${timeFmt.format(end)}`;
+}
+
 /**
  * Values for `<input type="datetime-local">` representing the given UTC
  * instant as wall-clock time in the org timezone (YYYY-MM-DDTHH:mm).

@@ -5,8 +5,15 @@ import { findOrCreateContactByEmail } from "@/lib/contacts";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { router, publicProcedure, adminProcedure } from "../trpc";
 
+const slotTitleSchema = z
+  .string()
+  .trim()
+  .min(1, "Title is required")
+  .max(120, "Title must be 120 characters or fewer");
+
 const slotTimesSchema = z
   .object({
+    title: slotTitleSchema,
     startsAt: z.coerce.date(),
     endsAt: z.coerce.date(),
     capacity: z.number().int().min(1).max(500),
@@ -21,6 +28,7 @@ const createSlotSchema = slotTimesSchema;
 const updateSlotSchema = z
   .object({
     id: z.string().uuid(),
+    title: slotTitleSchema,
     startsAt: z.coerce.date(),
     endsAt: z.coerce.date(),
     capacity: z.number().int().min(1).max(500),
@@ -82,6 +90,7 @@ export const volunteerRouter = router({
       .filter((slot) => slot._count.signups < slot.capacity)
       .map((slot) => ({
         id: slot.id,
+        title: slot.title,
         startsAt: slot.startsAt,
         endsAt: slot.endsAt,
       }));
@@ -212,6 +221,7 @@ export const volunteerRouter = router({
 
       return slots.map((slot) => ({
         id: slot.id,
+        title: slot.title,
         startsAt: slot.startsAt,
         endsAt: slot.endsAt,
         capacity: slot.capacity,
@@ -230,6 +240,7 @@ export const volunteerRouter = router({
     .mutation(async ({ ctx, input }) => {
       const slot = await ctx.prisma.volunteerSlot.create({
         data: {
+          title: input.title,
           startsAt: input.startsAt,
           endsAt: input.endsAt,
           capacity: input.capacity,
@@ -269,6 +280,7 @@ export const volunteerRouter = router({
       return ctx.prisma.volunteerSlot.update({
         where: { id: input.id },
         data: {
+          title: input.title,
           startsAt: input.startsAt,
           endsAt: input.endsAt,
           capacity: input.capacity,

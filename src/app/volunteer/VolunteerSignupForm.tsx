@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { trpc } from "@/lib/trpc";
-import { formatOrgSlotRange } from "@/lib/timezone";
+import { formatOrgDayLabel, formatOrgTimeRange } from "@/lib/timezone";
+import { groupVolunteerSlots } from "@/lib/volunteerSlots";
 
 const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
@@ -84,6 +85,8 @@ export function VolunteerSignupForm() {
     );
   }
 
+  const slotGroups = groupVolunteerSlots(slots);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
@@ -129,31 +132,49 @@ export function VolunteerSignupForm() {
         <legend className="text-lg font-semibold text-[var(--kbk-text)] mb-3">
           Pick a time
         </legend>
-        <ul className="space-y-2" role="list">
-          {slots.map((slot) => (
-            <li key={slot.id}>
-              <label
-                className={`flex items-center gap-3 rounded-xl px-4 py-3 cursor-pointer ring-1 transition-colors ${
-                  slotId === slot.id
-                    ? "bg-[var(--kbk-primary)]/10 ring-[var(--kbk-primary)]"
-                    : "bg-white/90 ring-[#025a9a]/10 hover:bg-white"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="slotId"
-                  value={slot.id}
-                  checked={slotId === slot.id}
-                  onChange={() => setSlotId(slot.id)}
-                  className="h-4 w-4 accent-[var(--kbk-primary)]"
-                />
-                <span className="text-[var(--kbk-text)] text-base sm:text-lg">
-                  {formatOrgSlotRange(slot.startsAt, slot.endsAt)}
-                </span>
-              </label>
-            </li>
+        <div className="space-y-6">
+          {slotGroups.map((group) => (
+            <section key={group.title}>
+              <h3 className="text-base sm:text-lg font-semibold text-[var(--kbk-primary)]">
+                {group.title}
+              </h3>
+              <div className="mt-2 space-y-4">
+                {group.days.map((day) => (
+                  <div key={day.dateKey}>
+                    <p className="text-sm font-medium text-[var(--kbk-text-muted)] mb-2">
+                      {formatOrgDayLabel(day.slots[0].startsAt)}
+                    </p>
+                    <ul className="space-y-2" role="list">
+                      {day.slots.map((slot) => (
+                        <li key={slot.id}>
+                          <label
+                            className={`flex items-center gap-3 rounded-xl px-4 py-3 cursor-pointer ring-1 transition-colors ${
+                              slotId === slot.id
+                                ? "bg-[var(--kbk-primary)]/10 ring-[var(--kbk-primary)]"
+                                : "bg-white/90 ring-[#025a9a]/10 hover:bg-white"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="slotId"
+                              value={slot.id}
+                              checked={slotId === slot.id}
+                              onChange={() => setSlotId(slot.id)}
+                              className="h-4 w-4 accent-[var(--kbk-primary)]"
+                            />
+                            <span className="text-[var(--kbk-text)] text-base sm:text-lg">
+                              {formatOrgTimeRange(slot.startsAt, slot.endsAt)}
+                            </span>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
           ))}
-        </ul>
+        </div>
       </fieldset>
 
       <fieldset className="space-y-4">

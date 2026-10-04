@@ -11,12 +11,14 @@ import {
 } from "@/lib/timezone";
 
 type SlotFormState = {
+  title: string;
   startsAtLocal: string;
   endsAtLocal: string;
   capacity: string;
 };
 
 const emptySlotForm = (): SlotFormState => ({
+  title: "",
   startsAtLocal: "",
   endsAtLocal: "",
   capacity: "10",
@@ -45,7 +47,11 @@ export function VolunteersPage() {
 
   const createSlot = trpc.volunteer.createSlot.useMutation({
     onSuccess: async () => {
-      setCreateForm(emptySlotForm());
+      setCreateForm((f) => ({
+        ...emptySlotForm(),
+        title: f.title,
+        capacity: f.capacity,
+      }));
       setCreateError(null);
       await invalidate();
     },
@@ -117,7 +123,13 @@ export function VolunteersPage() {
   const me = meQuery.data!;
   const slots = slotsQuery.data!;
 
-  const parseSlotTimes = (form: SlotFormState) => {
+  const existingTitles = Array.from(new Set(slots.map((slot) => slot.title)));
+
+  const parseSlotForm = (form: SlotFormState) => {
+    const title = form.title.trim();
+    if (!title) {
+      throw new Error("Title is required");
+    }
     if (!form.startsAtLocal || !form.endsAtLocal) {
       throw new Error("Start and end times are required");
     }
@@ -130,7 +142,7 @@ export function VolunteersPage() {
     if (endsAt <= startsAt) {
       throw new Error("End time must be after start time");
     }
-    return { startsAt, endsAt, capacity };
+    return { title, startsAt, endsAt, capacity };
   };
 
   const getManualForm = (slotId: string) =>
@@ -171,7 +183,7 @@ export function VolunteersPage() {
               e.preventDefault();
               setCreateError(null);
               try {
-                const parsed = parseSlotTimes(createForm);
+                const parsed = parseSlotForm(createForm);
                 createSlot.mutate(parsed);
               } catch (err) {
                 setCreateError(
@@ -180,6 +192,32 @@ export function VolunteersPage() {
               }
             }}
           >
+            <div className="sm:col-span-2 lg:col-span-4">
+              <label
+                htmlFor="create-title"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Title
+              </label>
+              <input
+                id="create-title"
+                type="text"
+                required
+                maxLength={120}
+                list="volunteer-slot-titles"
+                placeholder="e.g. Volunteer Day - Sorting"
+                value={createForm.title}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, title: e.target.value }))
+                }
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm"
+              />
+              <datalist id="volunteer-slot-titles">
+                {existingTitles.map((title) => (
+                  <option key={title} value={title} />
+                ))}
+              </datalist>
+            </div>
             <div>
               <label
                 htmlFor="create-starts"
@@ -294,12 +332,15 @@ export function VolunteersPage() {
                   <div className="p-4 sm:p-5 flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="font-medium text-gray-900">
-                        {formatOrgSlotRange(slot.startsAt, slot.endsAt)}
+                        {slot.title}
                         {isPast ? (
                           <span className="ml-2 text-xs font-normal text-gray-500">
                             (past)
                           </span>
                         ) : null}
+                      </p>
+                      <p className="text-sm text-gray-700 mt-0.5">
+                        {formatOrgSlotRange(slot.startsAt, slot.endsAt)}
                       </p>
                       <p className="text-sm text-gray-500 mt-1">
                         {slot.signupCount} / {slot.capacity} signed up
@@ -324,6 +365,7 @@ export function VolunteersPage() {
                           } else {
                             setEditingId(slot.id);
                             setEditForm({
+                              title: slot.title,
                               startsAtLocal: toOrgDateTimeLocalValue(
                                 slot.startsAt
                               ),
@@ -362,7 +404,7 @@ export function VolunteersPage() {
                         e.preventDefault();
                         setEditError(null);
                         try {
-                          const parsed = parseSlotTimes(editForm);
+                          const parsed = parseSlotForm(editForm);
                           updateSlot.mutate({ id: slot.id, ...parsed });
                         } catch (err) {
                           setEditError(
@@ -371,6 +413,25 @@ export function VolunteersPage() {
                         }
                       }}
                     >
+                      <div className="sm:col-span-2 lg:col-span-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Title
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          maxLength={120}
+                          list="volunteer-slot-titles"
+                          value={editForm.title}
+                          onChange={(e) =>
+                            setEditForm((f) => ({
+                              ...f,
+                              title: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm"
+                        />
+                      </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Starts

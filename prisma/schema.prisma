@@ -106,6 +106,8 @@ model RequestItem {
 
 model VolunteerSlot {
   id        String            @id @default(uuid())
+  /** Event label shown to the public, e.g. "Harvestfest - Clean Up". */
+  title     String            @db.VarChar(120)
   startsAt  DateTime
   endsAt    DateTime
   capacity  Int
