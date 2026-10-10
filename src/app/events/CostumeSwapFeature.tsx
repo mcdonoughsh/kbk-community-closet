@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { ReactNode } from "react";
 import { COSTUME_SWAP_2026 } from "@/data/events";
 import { formatOrgDayLabel } from "@/lib/timezone";
@@ -82,6 +83,12 @@ export function CostumeSwapFeature({
                   Clean, gently used kids’ costumes. Drop off at{" "}
                   {dropOffAddress} now through {dropOffDeadlineLabel}, or bring
                   them the day of.
+                  <Link
+                    href="/donate"
+                    className="mt-2 block w-fit text-sm font-semibold text-[var(--kbk-primary)] underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kbk-primary)] focus-visible:ring-offset-2"
+                  >
+                    How to donate
+                  </Link>
                 </dd>
               </div>
             </dl>
