@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Donate",
   description:
-    "Donate clean, gently used clothing to KBK Community Closet. Guidelines, drop-off locations, and how to give so your donations reach children and families quickly.",
+    "Donate clean, gently used clothing to KBK Community Closet. Guidelines, our anytime drop-off bin at Kennebunk Bible Church, and how to give so your donations reach children and families quickly.",
 };
 
 export default function DonatePage() {
@@ -53,7 +53,7 @@ export default function DonatePage() {
               "Clean and washed",
               "Gently used, no tears or stains",
               "Clearly labeled (size, type) when possible",
-              "Dropped off during our drop-off windows only",
+              "Bagged and placed inside our donation bin",
             ].map((item, i) => (
               <li
                 key={i}
@@ -96,7 +96,7 @@ export default function DonatePage() {
               "Dirty or unwashed items",
               "Torn, stained, or damaged clothing",
               "Items with odors or mildew",
-              "Donations left outside drop-off windows",
+              "Donations left outside the bin",
             ].map((item, i) => (
               <li
                 key={i}
@@ -125,21 +125,45 @@ export default function DonatePage() {
             id="dropoff-heading"
             className="text-2xl sm:text-3xl font-semibold text-[#025a9a] tracking-tight"
           >
-            Where & when to drop off
+            How to drop off
           </h2>
           <p className="mt-2 text-[#171717]/80 text-lg">
-            Donations are accepted only during scheduled drop-off windows so
-            volunteers can process them safely.
+            Drop off donations any time. We keep an outdoor donation bin at
+            Kennebunk Bible Church, so you don&apos;t need to wait for a
+            volunteer.
           </p>
+          <ol className="mt-8 space-y-4" role="list">
+            {[
+              "Come to Kennebunk Bible Church at 71 Portland Rd.",
+              "Walk around to the back of the church and look for our banner on the deck.",
+              "Walk up to the deck and you'll see the donation bin.",
+              "Open the bin, place your bagged donations inside, and close the lid.",
+            ].map((step, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-4 rounded-xl bg-white/90 px-5 py-4 shadow-sm ring-1 ring-[#025a9a]/10"
+              >
+                <span
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#025a9a] text-sm font-semibold text-white"
+                  aria-hidden
+                >
+                  {i + 1}
+                </span>
+                <span className="text-[#171717] font-medium">{step}</span>
+              </li>
+            ))}
+          </ol>
           <div className="mt-8 space-y-6">
             <div className="rounded-2xl overflow-hidden bg-white shadow-sm ring-1 ring-[#025a9a]/10">
               <div className="p-5 sm:p-6 border-b border-[#025a9a]/10">
-                <p className="text-[#171717] font-medium">Seven Mile Road Church</p>
+                <p className="text-[#171717] font-medium">
+                  <span translate="no">Kennebunk Bible Church</span>
+                </p>
                 <p className="text-[#171717] font-medium">
                   71 Portland Rd, Kennebunk, ME 04043
                 </p>
                 <a
-                  href="https://maps.app.goo.gl/gZHYBYV7KQHFGm2VA"
+                  href="https://maps.app.goo.gl/j9puL9JLLX2Zf2js6"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-2 inline-flex items-center gap-1.5 text-[#025a9a] font-semibold hover:underline focus:outline-none focus:ring-2 focus:ring-[#025a9a] focus:ring-offset-2 rounded"
@@ -153,19 +177,16 @@ export default function DonatePage() {
               <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] min-h-[240px] bg-[#e6f4ff]">
                 <iframe
                   src="https://www.google.com/maps?q=71+Portland+Rd,+Kennebunk,+ME+04043&output=embed&z=15"
-                  title="Map: KBK Community Closet drop-off at 71 Portland Rd, Kennebunk, ME"
+                  title="Map: Kennebunk Bible Church donation bin, 71 Portland Rd, Kennebunk, ME"
                   className="absolute inset-0 w-full h-full border-0"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
             </div>
-            <p className="text-[#171717]/80 text-lg">
-              Donations are accepted only during scheduled drop-off windows.
-              Check back or contact us for the latest schedule.
-            </p>
             <p className="text-[#025a9a] font-medium">
-              Please do not leave donations outside or after hours.
+              Please put everything inside the bin. Items left on the deck or
+              ground can get wet or damaged.
             </p>
           </div>
         </div>
