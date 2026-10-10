@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 type PromoBannerConfig = {
   imageSrc: string;
@@ -47,26 +48,43 @@ export function HomePromoBanner({ variant }: { variant: HomePromoBannerVariant }
         )}
       </div>
       <div className="flex justify-center sm:justify-end">
-        <Link
-          href="/events"
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#025a9a] hover:text-[#025a9a]/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffaa06]"
-        >
-          See events
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            className="h-5 w-5 shrink-0"
-            aria-hidden
-          >
-            <path
-              fillRule="evenodd"
-              d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </Link>
+        <PromoBannerLink href="/events">See events</PromoBannerLink>
       </div>
     </div>
+  );
+}
+
+export function PromoBannerLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "inline-flex items-center gap-1.5 text-sm font-semibold text-[#025a9a] underline-offset-4 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#025a9a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffaa06]",
+        className
+      )}
+    >
+      {children}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        className="h-5 w-5 shrink-0"
+        aria-hidden
+      >
+        <path
+          fillRule="evenodd"
+          d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </Link>
   );
 }

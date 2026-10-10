@@ -107,7 +107,53 @@ export function getSwap2025GallerySrc(filename: string) {
   return `${SWAP_2025_GALLERY_BASE}/${encodeURIComponent(filename)}`;
 }
 
+export const COSTUME_SWAP_2026 = {
+  title: "Kids Costume Swap",
+  venue: "Kennebunk Harvestfest",
+  /** Event day, YYYY-MM-DD in Eastern Time. */
+  dateKey: "2026-10-17",
+  dropOffAddress: "71 Portland Rd, Kennebunk",
+  /** Last drop-off day, YYYY-MM-DD in Eastern Time. */
+  dropOffDeadlineKey: "2026-10-16",
+  flier: {
+    src: "/images/costume-swap-2026/costume-swap-promo.png",
+    alt: "Kids Costume Swap at Kennebunk Harvestfest flyer: free event Saturday, October 17. Drop off clean, gently used kids’ costumes at 71 Portland Rd, Kennebunk through Friday, October 16, or bring them the day of.",
+    width: 1024,
+    height: 1024,
+  },
+} as const;
+
+export const FALL_POPUP_2026 = {
+  title: "Fall Pop-up",
+  dateLabel: "November 13 & 14, 2026",
+  /** Event days, YYYY-MM-DD in Eastern Time. */
+  eventDayKeys: ["2026-11-13", "2026-11-14"],
+  /** Last event day, YYYY-MM-DD in Eastern Time. */
+  endDateKey: "2026-11-14",
+  venue: "Kennebunk Bible Church",
+  address: "71 Portland Road, Kennebunk",
+  /** Donation drop-off days, YYYY-MM-DD in Eastern Time. */
+  dropOffDayKeys: ["2026-10-24", "2026-10-31", "2026-11-07", "2026-11-09"],
+  refreshmentsBy: "Five Acre Farm",
+  flier: {
+    src: "/images/popup-fall-2026/event-promo.png",
+    alt: "KBK Children’s Community Closet Fall Event flyer: Friday, November 13 and Saturday, November 14 at Kennebunk Bible Church, 71 Portland Road. Bring what’s extra, take what fits: kids’ clothes, shoes, toys, accessories, and gear. Donate gently used clothes for early access. Drop-off dates October 24, October 31, November 7, and November 9. Coffee and treats by Five Acre Farm.",
+    width: 791,
+    height: 1024,
+  },
+} as const;
+
 export const EVENT_FLIERS: EventFlier[] = [
+  {
+    id: "costume-swap-2026",
+    ...COSTUME_SWAP_2026.flier,
+    label: "Kids Costume Swap 2026",
+  },
+  {
+    id: "fall-2026",
+    ...FALL_POPUP_2026.flier,
+    label: "Fall Pop-up 2026",
+  },
   {
     id: "spring-2026",
     src: "/images/popup-spring-2026/event-promo.png",

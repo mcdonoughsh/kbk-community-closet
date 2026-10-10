@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { EventGallery } from "./EventGallery";
 import { EventFliersRow } from "./EventFliersRow";
-import { UpcomingEventTeaser } from "./UpcomingEventTeaser";
+import { FallPopupNextUp, UpcomingEventTeaser } from "./UpcomingEventTeaser";
+import { CostumeSwapFeature } from "./CostumeSwapFeature";
+import { FallPopupFeature } from "./FallPopupFeature";
 import { SpringEventRecap } from "./SpringEventRecap";
+import { formatEventCountdown, isOrgDateUpcoming } from "@/lib/eventSchedule";
 import {
+  COSTUME_SWAP_2026,
+  FALL_POPUP_2026,
   SPRING_2026_GALLERY,
   SWAP_2025_GALLERY,
   SPRING_2026_EVENT_DATE,
@@ -18,15 +23,31 @@ import {
 export const metadata: Metadata = {
   title: "Events",
   description:
-    "KBK Community Closet pop-up events—sustainability, neighbors helping neighbors, and community care. Fall pop-up coming soon.",
+    "KBK Community Closet events: Kids Costume Swap at Kennebunk Harvestfest on October 17, and our Fall Pop-up November 13 & 14. Sustainability, neighbors helping neighbors, and community care.",
 };
+
+/** Re-render hourly so countdowns and upcoming/past placement follow the calendar. */
+export const revalidate = 3600;
 
 const springEventLabel = formatEventMonthYear(SPRING_2026_EVENT_DATE);
 
 export default function EventsPage() {
+  const now = new Date();
+  const costumeSwapCountdown = formatEventCountdown(COSTUME_SWAP_2026.dateKey, now);
+  const isFallPopupUpcoming = isOrgDateUpcoming(FALL_POPUP_2026.endDateKey, now);
+  const fallPopupCountdown = isFallPopupUpcoming
+    ? (formatEventCountdown(FALL_POPUP_2026.eventDayKeys[0], now) ?? "Today")
+    : null;
+
   return (
     <div className="min-h-screen bg-[var(--kbk-background)] font-sans">
-      <UpcomingEventTeaser />
+      {costumeSwapCountdown ? (
+        <CostumeSwapFeature countdown={costumeSwapCountdown}>
+          {isFallPopupUpcoming ? <FallPopupNextUp /> : null}
+        </CostumeSwapFeature>
+      ) : isFallPopupUpcoming ? (
+        <UpcomingEventTeaser />
+      ) : null}
       <section
         id="main-content"
         className="relative overflow-hidden px-4 py-10 sm:px-6 sm:py-16 lg:px-8"
@@ -47,6 +68,8 @@ export default function EventsPage() {
           </p>
         </div>
       </section>
+
+      {fallPopupCountdown ? <FallPopupFeature countdown={fallPopupCountdown} /> : null}
 
       <section
         className="px-4 pb-12 sm:px-6 lg:px-8"
@@ -129,6 +152,25 @@ export default function EventsPage() {
             Earlier gatherings where neighbors shared resources and kept quality items in circulation.
           </p>
 
+          {costumeSwapCountdown ? null : (
+            <article
+              className="mt-8 bg-white p-5 shadow-sm ring-1 ring-[var(--kbk-primary)]/10 sm:p-8"
+              aria-labelledby="costume-swap-2026-heading"
+            >
+              <h3
+                id="costume-swap-2026-heading"
+                className="text-xl font-semibold text-[var(--kbk-primary-hover)]"
+              >
+                {COSTUME_SWAP_2026.title} 2026
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-pretty text-[var(--kbk-text)]/80">
+                Our costume swap at {COSTUME_SWAP_2026.venue} gave costumes a
+                second life and helped make Halloween fun and accessible for
+                local families. Thank you to everyone who donated and swapped.
+              </p>
+            </article>
+          )}
+
           <article
             className="mt-8 bg-white p-5 shadow-sm ring-1 ring-[var(--kbk-primary)]/10 sm:p-8"
             aria-labelledby="swap-2025-heading"
@@ -177,8 +219,10 @@ export default function EventsPage() {
             Stay updated
           </h2>
           <p className="mt-3 text-base leading-relaxed text-pretty text-[var(--kbk-text)]/80">
-            We are working on the fall pop up, and will post dates as soon as they are confirmed! Another chance to share, swap, and support one
-            another while keeping great items out of landfills.
+            {isFallPopupUpcoming
+              ? `Our ${FALL_POPUP_2026.title} is ${FALL_POPUP_2026.dateLabel}. Another chance to share, swap, and support one another while keeping great items out of landfills.`
+              : "Check back for our next pop-up, another chance to share, swap, and support one another while keeping great items out of landfills."}{" "}
+            Everyone is welcome; donations are appreciated but never required.
           </p>
         </div>
       </section>

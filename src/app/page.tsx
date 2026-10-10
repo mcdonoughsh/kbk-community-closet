@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HomePromoBanner } from "@/components/organisms/HomePromoBanner";
+import { CostumeSwapPromoBanner } from "@/components/organisms/CostumeSwapPromoBanner";
 import { FeaturedGearCard } from "@/components/organisms/FeaturedGearCard";
 import {
   isFallPromoBannerEnabled,
   isSpringPromoBannerEnabled,
 } from "@/lib/featureFlags";
 import { getFeaturedGear } from "@/lib/contentful";
+import { formatEventCountdown } from "@/lib/eventSchedule";
+import { COSTUME_SWAP_2026 } from "@/data/events";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -28,16 +31,24 @@ const SIZES = [
   "4T and up",
 ];
 
+/** Re-render hourly so the costume swap banner hands off to the fall banner on its own. */
+export const revalidate = 3600;
+
 export default async function Home() {
   const featuredGear = await getFeaturedGear();
 
   const showSpringPromoBanner = isSpringPromoBannerEnabled();
   const showFallPromoBanner = isFallPromoBannerEnabled();
+  const costumeSwapCountdown = formatEventCountdown(COSTUME_SWAP_2026.dateKey);
 
   return (
     <>
       {showSpringPromoBanner && <HomePromoBanner variant="spring" />}
-      {showFallPromoBanner && <HomePromoBanner variant="fall" />}
+      {costumeSwapCountdown ? (
+        <CostumeSwapPromoBanner countdown={costumeSwapCountdown} />
+      ) : (
+        showFallPromoBanner && <HomePromoBanner variant="fall" />
+      )}
       <div className="min-h-screen bg-[#e6f4ff] font-sans">
         {/* Hero — same rhythm as donate / request */}
         <section

@@ -18,7 +18,7 @@ export function EventFliersRow() {
                 alt={alt}
                 width={width}
                 height={height}
-                className="h-full w-full object-contain object-top"
+                className="h-full w-full object-contain object-center"
                 loading="lazy"
                 sizes="(max-width: 640px) 100vw, 50vw"
               />

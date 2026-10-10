@@ -1,3 +1,5 @@
+import { FALL_POPUP_2026 } from "@/data/events";
+
 export function UpcomingEventTeaser() {
   return (
     <aside
@@ -13,13 +15,27 @@ export function UpcomingEventTeaser() {
             id="upcoming-teaser-heading"
             className="mt-1 text-xl font-semibold text-balance text-[#e45e5e] sm:text-2xl"
           >
-            Fall Pop-up
+            {FALL_POPUP_2026.title}
           </h2>
         </div>
         <p className="shrink-0 text-center text-base font-semibold tabular-nums text-[#025a9a] sm:text-right">
-          November 13 & 14, 2026
+          {FALL_POPUP_2026.dateLabel}
         </p>
       </div>
     </aside>
+  );
+}
+
+export function FallPopupNextUp() {
+  return (
+    <p className="mt-6 text-center text-lg font-semibold text-balance text-white sm:mt-8">
+      Coming up next:{" "}
+      <a
+        href="#fall-popup"
+        className="underline underline-offset-4 hover:no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--kbk-primary-hover)]"
+      >
+        {FALL_POPUP_2026.title}, {FALL_POPUP_2026.dateLabel}
+      </a>
+    </p>
   );
 }
