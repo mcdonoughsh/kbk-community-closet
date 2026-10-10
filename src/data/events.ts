@@ -137,7 +137,7 @@ export const FALL_POPUP_2026 = {
   refreshmentsBy: "Five Acre Farm",
   flier: {
     src: "/images/popup-fall-2026/event-promo.png",
-    alt: "KBK Children’s Community Closet Fall Event flyer: Friday, November 13 and Saturday, November 14 at Kennebunk Bible Church, 71 Portland Road. Bring what’s extra, take what fits: kids’ clothes, shoes, toys, accessories, and gear. Donate gently used clothes for early access. Drop-off dates October 24, October 31, November 7, and November 9. Coffee and treats by Five Acre Farm.",
+    alt: "KBK Children’s Community Closet Fall Event flyer: Friday, November 13 and Saturday, November 14 at Kennebunk Bible Church, 71 Portland Road. Bring what’s extra, take what fits: kids’ clothes, shoes, accessories, and gear. Donate gently used clothes for early access. Drop-off dates October 24, October 31, November 7, and November 9. Coffee and treats by Five Acre Farm.",
     width: 791,
     height: 1024,
   },
