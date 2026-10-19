@@ -62,8 +62,8 @@ export default function EventsPage() {
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-[var(--kbk-text)]/80 sm:text-xl">
             Our pop-ups are where sustainability and community care go hand in
-            hand neighbors donating, volunteering, and supporting one another
-            so kids’ clothing, shoes, and baby essentials find new
+            hand. Neighbors donating, volunteering, and supporting one another
+            so kids’ basics, shoes, summer and winter gear, and baby essentials find new
             homes instead of landfills.
           </p>
         </div>
