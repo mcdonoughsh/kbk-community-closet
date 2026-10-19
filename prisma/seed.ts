@@ -105,6 +105,7 @@ async function seedAdminUser() {
       name: "Admin",
       phone: "",
       email: adminEmail,
+      source: "INTERNAL",
       userProfileId: userProfile.id,
     },
   });

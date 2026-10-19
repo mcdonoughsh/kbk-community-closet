@@ -4,20 +4,8 @@ import { FALL_POPUP_2026 } from "@/data/events";
 import { formatOrgDayLabel } from "@/lib/timezone";
 import { formatOrgShortDay, orgDateKeyToDate } from "@/lib/eventSchedule";
 
-const {
-  title,
-  eventDayKeys,
-  venue,
-  address,
-  dropOffDayKeys,
-  refreshmentsBy,
-  flier,
-} = FALL_POPUP_2026;
-
-const eventDaysLabel = new Intl.ListFormat("en", {
-  style: "long",
-  type: "conjunction",
-}).format(eventDayKeys.map((key) => formatOrgDayLabel(orgDateKeyToDate(key))));
+const { title, hours, venue, address, dropOffDayKeys, refreshmentsBy, flier } =
+  FALL_POPUP_2026;
 
 export function FallPopupFeature({ countdown }: { countdown: string }) {
   return (
@@ -59,14 +47,30 @@ export function FallPopupFeature({ countdown }: { countdown: string }) {
           </h2>
           <p className="mt-3 text-base leading-relaxed text-pretty text-[var(--kbk-text)]/80">
             Bring what’s extra, take what fits. Go home with kids’ clothes,
-            shoes, toys, accessories, and gear you need for the upcoming
-            season. Everyone is welcome.
+            shoes, accessories, and gear you need for the upcoming season.
+            Everyone is welcome.
           </p>
 
           <dl className="mt-5 space-y-3 text-base">
             <div>
               <dt className="font-semibold text-[var(--kbk-text)]">When</dt>
-              <dd className="text-[var(--kbk-text)]/80">{eventDaysLabel}</dd>
+              <dd className="text-[var(--kbk-text)]/80">
+                <ul className="m-0 list-none space-y-2 p-0">
+                  {hours.map(({ dateKey, earlyAccess, openToAll }) => (
+                    <li key={dateKey}>
+                      <span className="font-medium text-[var(--kbk-text)]">
+                        {formatOrgDayLabel(orgDateKeyToDate(dateKey))}
+                      </span>
+                      <span className="block text-sm tabular-nums">
+                        {earlyAccess} · Early access for those who donated
+                      </span>
+                      <span className="block text-sm tabular-nums">
+                        {openToAll} · Everyone welcome
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
             </div>
             <div>
               <dt className="font-semibold text-[var(--kbk-text)]">Where</dt>
@@ -82,8 +86,8 @@ export function FallPopupFeature({ countdown }: { countdown: string }) {
                 </div>
               </dt>
               <dd className="text-[var(--kbk-text)]/80">
-                Donate gently used clothes and get early access on Friday and
-                Saturday. Drop-off days:
+                Donate gently used clothes and get early access both days.
+                Drop-off days:
                 <ul className="m-0 mt-2 flex list-none flex-wrap gap-2 p-0">
                   {dropOffDayKeys.map((key) => (
                     <li

@@ -8,6 +8,8 @@ function makeContact(overrides: Partial<Contact> = {}): Contact {
     name: "Ada",
     phone: "555-0100",
     email: "ada@example.com",
+    source: "INTERNAL",
+    sourceDetail: null,
     userProfileId: null,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -40,9 +42,16 @@ describe("contacts", () => {
       const result = await findOrCreateContactByEmail(prisma, {
         name: "Bob",
         phone: "",
+        source: "INTERNAL",
       });
       expect(create).toHaveBeenCalledWith({
-        data: { name: "Bob", phone: "", email: null },
+        data: {
+          name: "Bob",
+          phone: "",
+          email: null,
+          source: "INTERNAL",
+          sourceDetail: null,
+        },
       });
       expect(result.email).toBeNull();
       expect(findFirst).not.toHaveBeenCalled();
@@ -59,21 +68,54 @@ describe("contacts", () => {
         name: "Ada Lovelace",
         email: "ADA@example.com",
         phone: "555-9999",
+        source: "EVENT",
+        sourceDetail: "fall-2026",
       });
 
-      expect(update).toHaveBeenCalled();
+      expect(update).toHaveBeenCalledWith({
+        where: { id: "contact-1" },
+        data: { name: "Ada Lovelace", phone: "555-9999", email: "ada@example.com" },
+      });
+      expect(create).not.toHaveBeenCalled();
       expect(result.name).toBe("Ada Lovelace");
     });
 
-    it("creates when no email match exists", async () => {
+    it("keeps the original source when an existing contact matches", async () => {
+      const existing = makeContact({ source: "REQUEST" });
+      findFirst.mockResolvedValue(existing);
+
+      const result = await findOrCreateContactByEmail(prisma, {
+        name: "Ada",
+        email: "ada@example.com",
+        phone: "555-0100",
+        source: "EVENT",
+        sourceDetail: "fall-2026",
+      });
+
+      expect(result).toBe(existing);
+      expect(update).not.toHaveBeenCalled();
+      expect(create).not.toHaveBeenCalled();
+    });
+
+    it("records source and detail when no email match exists", async () => {
       findFirst.mockResolvedValue(null);
       create.mockResolvedValue(makeContact());
       await findOrCreateContactByEmail(prisma, {
         name: "Ada",
         email: "ada@example.com",
         phone: "555-0100",
+        source: "EVENT",
+        sourceDetail: "fall-2026",
       });
-      expect(create).toHaveBeenCalled();
+      expect(create).toHaveBeenCalledWith({
+        data: {
+          name: "Ada",
+          phone: "555-0100",
+          email: "ada@example.com",
+          source: "EVENT",
+          sourceDetail: "fall-2026",
+        },
+      });
     });
   });
 });

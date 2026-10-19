@@ -3,6 +3,7 @@ import { router, publicProcedure } from "../trpc";
 import { requestRouter } from "./request";
 import { adminRouter } from "./admin";
 import { volunteerRouter } from "./volunteer";
+import { earlyAccessRouter } from "./earlyAccess";
 
 /**
  * Main tRPC router
@@ -21,6 +22,7 @@ export const appRouter = router({
   request: requestRouter,
   admin: adminRouter,
   volunteer: volunteerRouter,
+  earlyAccess: earlyAccessRouter,
 });
 
 export type AppRouter = typeof appRouter;

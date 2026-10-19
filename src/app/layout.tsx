@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Navigation from "@/components/organisms/Navigation";
 import { GiveOnlineSection } from "@/components/organisms/GiveOnlineSection";
@@ -32,6 +33,8 @@ export const metadata: Metadata = {
   },
 };
 
+const GA_MEASUREMENT_ID = "G-R92TNP7HWE";
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -59,6 +62,9 @@ export default function RootLayout({
           <SiteFooter />
         </TRPCProvider>
       </body>
+      {process.env.NODE_ENV === "production" ? (
+        <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
+      ) : null}
     </html>
   );
 }

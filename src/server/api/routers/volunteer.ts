@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { VolunteerSignupSource } from "@prisma/client";
+import { ContactSource, VolunteerSignupSource } from "@prisma/client";
 import { findOrCreateContactByEmail } from "@/lib/contacts";
 import { verifyTurnstileToken } from "@/lib/turnstile";
 import { router, publicProcedure, adminProcedure } from "../trpc";
@@ -143,6 +143,7 @@ export const volunteerRouter = router({
         name: input.name,
         email: input.email,
         phone: input.phone,
+        source: ContactSource.INTERNAL,
       });
 
       const existingSignup = await ctx.prisma.volunteerSignup.findUnique({
@@ -342,6 +343,7 @@ export const volunteerRouter = router({
         name: input.name,
         email: input.email,
         phone: input.phone,
+        source: ContactSource.INTERNAL,
       });
 
       const existingSignup = await ctx.prisma.volunteerSignup.findUnique({

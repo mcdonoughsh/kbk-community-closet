@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Turnstile } from "@marsidev/react-turnstile";
 import { trpc } from "@/lib/trpc";
 import { formatOrgDayLabel, formatOrgTimeRange } from "@/lib/timezone";
 import { groupVolunteerSlots } from "@/lib/volunteerSlots";
-
-const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+import {
+  TurnstileField,
+  resolveTurnstileToken,
+} from "@/components/molecules/TurnstileField";
 
 export function VolunteerSignupForm() {
   const slotsQuery = trpc.volunteer.listOpenSlots.useQuery();
@@ -33,7 +34,6 @@ export function VolunteerSignupForm() {
   const [slotId, setSlotId] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
-  const [turnstileError, setTurnstileError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
 
   if (slotsQuery.isLoading) {
@@ -96,24 +96,9 @@ export function VolunteerSignupForm() {
       return;
     }
 
-    if (!siteKey) {
-      // Dev without Turnstile keys still needs a placeholder token
-      if (process.env.NODE_ENV === "development") {
-        signUp.mutate({
-          slotId,
-          name: name.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          turnstileToken: "dev-bypass",
-        });
-        return;
-      }
-      setFormError("Captcha is not configured. Please try again later.");
-      return;
-    }
-
-    if (!turnstileToken) {
-      setFormError("Please complete the captcha");
+    const captcha = resolveTurnstileToken(turnstileToken);
+    if ("error" in captcha) {
+      setFormError(captcha.error);
       return;
     }
 
@@ -122,7 +107,7 @@ export function VolunteerSignupForm() {
       name: name.trim(),
       email: email.trim(),
       phone: phone.trim(),
-      turnstileToken,
+      turnstileToken: captcha.token,
     });
   };
 
@@ -240,36 +225,7 @@ export function VolunteerSignupForm() {
         </div>
       </fieldset>
 
-      {siteKey ? (
-        <div className="space-y-2">
-          <Turnstile
-            siteKey={siteKey}
-            onSuccess={(token) => {
-              setTurnstileToken(token);
-              setTurnstileError(null);
-            }}
-            onExpire={() => setTurnstileToken("")}
-            onError={(code) => {
-              setTurnstileToken("");
-              setTurnstileError(
-                typeof code === "string" && code.length > 0
-                  ? `Captcha failed to load (${code}). If you are on localhost, add localhost to the Turnstile widget hostnames in the Cloudflare dashboard.`
-                  : "Captcha failed to load. Check that this hostname is allowed on your Turnstile widget."
-              );
-            }}
-            options={{ theme: "light" }}
-          />
-          {turnstileError ? (
-            <p className="text-red-600 text-sm" role="alert">
-              {turnstileError}
-            </p>
-          ) : null}
-        </div>
-      ) : process.env.NODE_ENV === "development" ? (
-        <p className="text-sm text-[var(--kbk-text-muted)]">
-          Turnstile keys not set — captcha skipped in development.
-        </p>
-      ) : null}
+      <TurnstileField onTokenChange={setTurnstileToken} />
 
       {formError ? (
         <p className="text-red-600 text-sm" role="alert">

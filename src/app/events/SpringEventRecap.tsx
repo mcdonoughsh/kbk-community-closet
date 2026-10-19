@@ -20,7 +20,7 @@ export function SpringEventRecap() {
       </p>
       <p>
         Because of your generosity, thousands of kids’ clothing items,
-        shoes, toys, books, and baby essentials found new homes instead of
+        shoes, books, and baby essentials found new homes instead of
         ending up in landfills. Events like this are a beautiful reminder that
         sustainability and community care can go hand in hand.
       </p>

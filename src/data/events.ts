@@ -123,11 +123,24 @@ export const COSTUME_SWAP_2026 = {
   },
 } as const;
 
+export type EventDayHours = {
+  /** YYYY-MM-DD in Eastern Time. */
+  dateKey: string;
+  /** Donor early access window, Eastern Time. */
+  earlyAccess: string;
+  /** Open-to-everyone window, Eastern Time. */
+  openToAll: string;
+};
+
 export const FALL_POPUP_2026 = {
   title: "Fall Pop-up",
   dateLabel: "November 13 & 14, 2026",
   /** Event days, YYYY-MM-DD in Eastern Time. */
   eventDayKeys: ["2026-11-13", "2026-11-14"],
+  hours: [
+    { dateKey: "2026-11-13", earlyAccess: "4:30–5:30 PM", openToAll: "5:30–7 PM" },
+    { dateKey: "2026-11-14", earlyAccess: "8:30–9:30 AM", openToAll: "9:30–11 AM" },
+  ],
   /** Last event day, YYYY-MM-DD in Eastern Time. */
   endDateKey: "2026-11-14",
   venue: "Kennebunk Bible Church",

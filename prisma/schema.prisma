@@ -37,30 +37,48 @@ enum VolunteerSignupSource {
   ADMIN
 }
 
+/**
+ * How a contact first reached us. Later activity comes from joined tables.
+ */
+enum ContactSource {
+  INTERNAL
+  EVENT
+  REQUEST
+}
+
 // ─── Models ──────────────────────────────────────────────
 
 model ItemType {
-  id           String       @id @default(uuid())
-  name         String       @unique
+  id           String        @id @default(uuid())
+  name         String        @unique
   category     ItemCategory
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  isDeleted    Boolean      @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  isDeleted    Boolean       @default(false)
   requestItems RequestItem[]
 }
 
 model Contact {
-  id               String            @id @default(uuid())
-  name             String
-  phone            String
-  email            String?
-  userProfileId    String?           @unique
-  userProfile      UserProfile?      @relation(fields: [userProfileId], references: [id])
-  requests         Request[]
-  volunteerSignups VolunteerSignup[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  isDeleted        Boolean           @default(false)
+  id                 String              @id @default(uuid())
+  name               String
+  phone              String
+  email              String?
+  /**
+   * Set once at creation; never overwritten by later activity.
+   */
+  source             ContactSource
+  /**
+   * e.g. event slug "fall-2026"; null when not applicable.
+   */
+  sourceDetail       String?             @db.VarChar(60)
+  userProfileId      String?             @unique
+  userProfile        UserProfile?        @relation(fields: [userProfileId], references: [id])
+  requests           Request[]
+  volunteerSignups   VolunteerSignup[]
+  earlyAccessSignups EarlyAccessSignup[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  isDeleted          Boolean             @default(false)
 }
 
 model UserProfile {
@@ -79,7 +97,9 @@ model Request {
   contactId      String
   contact        Contact       @relation(fields: [contactId], references: [id])
   status         RequestStatus @default(NEW)
-  /** Free-text assignee label (max 100 chars); distinct from assignedTo (volunteer profile). */
+  /**
+   * Free-text assignee label (max 100 chars); distinct from assignedTo (volunteer profile).
+   */
   assignee       String?       @db.VarChar(100)
   additionalInfo String?
   assignedToId   String?
@@ -96,8 +116,8 @@ model RequestItem {
   request    Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
   itemTypeId String
   itemType   ItemType @relation(fields: [itemTypeId], references: [id])
-  size       String?  // null for gear items
-  gender     String?  // null for gear items
+  size       String? // null for gear items
+  gender     String? // null for gear items
   quantity   Int      @default(1)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -106,7 +126,9 @@ model RequestItem {
 
 model VolunteerSlot {
   id        String            @id @default(uuid())
-  /** Event label shown to the public, e.g. "Harvestfest - Clean Up". */
+  /**
+   * Event label shown to the public, e.g. "Harvestfest - Clean Up".
+   */
   title     String            @db.VarChar(120)
   startsAt  DateTime
   endsAt    DateTime
@@ -118,15 +140,34 @@ model VolunteerSlot {
 }
 
 model VolunteerSignup {
-  id        String                 @id @default(uuid())
+  id        String                @id @default(uuid())
   slotId    String
-  slot      VolunteerSlot          @relation(fields: [slotId], references: [id])
+  slot      VolunteerSlot         @relation(fields: [slotId], references: [id])
   contactId String
-  contact   Contact                @relation(fields: [contactId], references: [id])
-  source    VolunteerSignupSource  @default(PUBLIC)
-  createdAt DateTime               @default(now())
-  updatedAt DateTime               @updatedAt
-  isDeleted Boolean                @default(false)
+  contact   Contact               @relation(fields: [contactId], references: [id])
+  source    VolunteerSignupSource @default(PUBLIC)
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  isDeleted Boolean               @default(false)
 
   @@unique([slotId, contactId])
+}
+
+model EarlyAccessSignup {
+  id              String   @id @default(uuid())
+  /**
+   * Slug from src/data/earlyAccess.ts, e.g. "fall-2026".
+   */
+  eventSlug       String   @db.VarChar(60)
+  contactId       String
+  contact         Contact  @relation(fields: [contactId], references: [id])
+  /**
+   * Preferred early access day (YYYY-MM-DD, Eastern Time); null means either day.
+   */
+  preferredDayKey String?  @db.VarChar(10)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  isDeleted       Boolean  @default(false)
+
+  @@unique([eventSlug, contactId])
 }

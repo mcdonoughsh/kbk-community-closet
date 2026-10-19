@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { RequestStatus } from "@prisma/client";
+import { ContactSource, RequestStatus } from "@prisma/client";
+import { findOrCreateContactByEmail } from "@/lib/contacts";
 import { scheduleNewRequestSlackNotification } from "@/lib/slack-notify";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 
@@ -139,15 +140,16 @@ export const requestRouter = router({
             }))
           : [];
 
+      const requestContact = await findOrCreateContactByEmail(ctx.prisma, {
+        name: contact.name,
+        phone: contact.phone,
+        email: contact.email,
+        source: ContactSource.REQUEST,
+      });
+
       const request = await ctx.prisma.request.create({
         data: {
-          contact: {
-            create: {
-              name: contact.name,
-              phone: contact.phone,
-              email: contact.email || null,
-            },
-          },
+          contactId: requestContact.id,
           additionalInfo: additionalInfo || null,
           items: {
             create: [...resolvedItems, ...curatedBagRows],
